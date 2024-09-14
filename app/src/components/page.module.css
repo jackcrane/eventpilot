@@ -1,0 +1,11 @@
+.content {
+  min-height: 80vh;
+  padding: 10px 0px;
+  flex: 1;
+}
+
+.page {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}

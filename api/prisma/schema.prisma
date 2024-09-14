@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = "mysql://apps:Guro6297@db.jackcrane.rocks:3306/eventpilot"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  otps                            Otp[]
+  logs                            Log[]
+  organizations                   UserOrganization[]
+  organizationInvitationsSent     OrganizationInvitation[] @relation("InvitationsSent")
+  organizationInvitationsReceived OrganizationInvitation[] @relation("InvitationsReceived")
+}
+
+model Otp {
+  id        String   @id @default(cuid())
+  otp       Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  active    Boolean  @default(true)
+
+  // Relations
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  logs   Log[]
+}
+
+model UserOrganization {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model Organization {
+  id                  String  @id @default(cuid())
+  name                String
+  website             String?
+  publicContactEmail  String?
+  privateContactEmail String?
+  privateContactPhone String?
+  category            String?
+
+  legalName         String?
+  taxId             String?
+  type              String?
+  addressLine1      String?
+  addressLine2      String?
+  city              String?
+  state             String?
+  zip               String?
+  addressPublic     Boolean?
+  legalContactEmail String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  users       UserOrganization[]
+  invitations OrganizationInvitation[]
+}
+
+model OrganizationInvitation {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  status InvitationStatus @default(PENDING)
+
+  // Relations
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  invitedByUserId String
+  invitedByUser   User   @relation("InvitationsSent", fields: [invitedByUserId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  invitedUserId String
+  invitedUser   User   @relation("InvitationsReceived", fields: [invitedUserId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  REVOKED
+}
+
+model Log {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  data Json
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  otpId String?
+  otp   Otp?    @relation(fields: [otpId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  LogType LogType? @relation(fields: [type], references: [name], onDelete: Cascade, onUpdate: Cascade)
+  type    String?
+}
+
+model LogType {
+  name String @id
+  logs Log[]
+}

@@ -1,0 +1,11 @@
+-- AlterTable
+ALTER TABLE `Organization` ADD COLUMN `addressLine1` VARCHAR(191) NULL,
+    ADD COLUMN `addressLine2` VARCHAR(191) NULL,
+    ADD COLUMN `addressPublic` BOOLEAN NULL,
+    ADD COLUMN `city` VARCHAR(191) NULL,
+    ADD COLUMN `legalContactEmail` VARCHAR(191) NULL,
+    ADD COLUMN `legalName` VARCHAR(191) NULL,
+    ADD COLUMN `state` VARCHAR(191) NULL,
+    ADD COLUMN `taxId` VARCHAR(191) NULL,
+    ADD COLUMN `type` VARCHAR(191) NULL,
+    ADD COLUMN `zip` VARCHAR(191) NULL;

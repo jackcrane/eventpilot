@@ -1,0 +1,22 @@
+.scg {
+  mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+}
+
+.gos {
+  width: 50%;
+}
+.sos {
+  display: none;
+}
+
+@media screen and (max-width: 600px) {
+  .hos {
+    display: none;
+  }
+  .gos {
+    width: 100%;
+  }
+  .sos {
+    display: block;
+  }
+}
