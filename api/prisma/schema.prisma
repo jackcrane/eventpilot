@@ -69,6 +69,13 @@ model Organization {
   addressPublic     Boolean?
   legalContactEmail String?
 
+  marketingPrimaryBannerImageId String? @unique
+  marketingPrimaryBannerImage    Image? @relation("marketingPrimaryBannerImage", fields: [marketingPrimaryBannerImageId], references: [id])
+  marketingLogoId String? @unique
+  marketingLogo    Image? @relation("marketingLogo", fields: [marketingLogoId], references: [id])
+  marketingSquareLogoId String? @unique
+  marketingSquareLogo    Image? @relation("marketingSquareLogo", fields: [marketingSquareLogoId], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -122,4 +129,18 @@ model Log {
 model LogType {
   name String @id
   logs Log[]
+}
+
+model Image {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  url String
+  key String
+  name String
+
+  organizationPrimaryBannerImage    Organization? @relation("marketingPrimaryBannerImage")
+  organizationLogoImage  Organization? @relation("marketingLogo")
+  organizationSquareLogo            Organization? @relation("marketingSquareLogo")
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { createRef, useEffect, useState } from "react";
 import { NewOrganizationSkeleton } from "../../../components/newOrganizationSkeleton.jsx";
 import { IconArrowRight, IconResize } from "@tabler/icons-react";
 import { Alert } from "tabler-react-2/dist/alert/index.js";
@@ -9,27 +9,44 @@ import {
   DropdownInput,
   Switch,
   Button,
+  Card,
 } from "tabler-react-2";
 const { H1, H2, Text, B } = Typography;
 import styles from "./new.module.css";
-import { switchForHighlight } from "./Legal.content.jsx";
+import { switchForHighlight } from "./Marketing.content.jsx";
 import classNames from "classnames";
 import { validateEmail } from "../../../util/validateEmail.js";
 import { useOrg } from "../../../hooks/useOrg.js";
 import { useSearchParams } from "react-router-dom";
+import {
+  generateUploadButton,
+  generateUploadDropzone,
+} from "@uploadthing/react";
+import "@uploadthing/react/styles.css";
+import { compressImage } from "../../../util/image.js";
 
 export const NewOrganizationMarketing = () => {
   return (
-    <NewOrganizationSkeleton activeStep={1}>
+    <NewOrganizationSkeleton activeStep={2}>
       <Marketing />
     </NewOrganizationSkeleton>
   );
 };
 
-const Markteting = () => {
+const Marketing = () => {
   const [searchParams] = useSearchParams();
   const orgId = searchParams.get("orgId");
   const { error, loading, update, org } = useOrg(orgId);
+
+  const [mainBannerImage, setMainBannerImage] = useState(
+    org?.marketingPrimaryBannerImage ? org.marketingPrimaryBannerImage : null
+  );
+  const [logoImage, setLogoImage] = useState(
+    org?.marketingLogo ? org.marketingLogo : null
+  );
+  const [squareLogoImage, setSquareLogoImage] = useState(
+    org?.marketingSquareLogo ? org.marketingSquareLogo : null
+  );
 
   const stringIsValid = (str) => {
     if (!shouldDangerEmptyFields) return true;
@@ -48,12 +65,31 @@ const Markteting = () => {
   const [shouldDangerEmptyFields, setShouldDangerEmptyFields] = useState(false);
 
   useEffect(() => {
-    if (org.id) {
+    if (org?.id) {
+      setMainBannerImage(org.marketingPrimaryBannerImage);
+      setLogoImage(org.marketingLogo);
+      setSquareLogoImage(org.marketingSquareLogo);
     }
   }, [org]);
 
   const handleNext = async () => {
-    const data = {};
+    const data = {
+      mainBannerImage: {
+        key: mainBannerImage?.key,
+        name: mainBannerImage?.name,
+        url: mainBannerImage?.url,
+      },
+      logoImage: {
+        key: logoImage?.key,
+        name: logoImage?.name,
+        url: logoImage?.url,
+      },
+      squareLogoImage: {
+        key: squareLogoImage?.key,
+        name: squareLogoImage?.name,
+        url: squareLogoImage?.url,
+      },
+    };
 
     const [response, error] = await update(data);
 
@@ -85,20 +121,159 @@ const Markteting = () => {
           {error}
         </Alert>
       )}
+
       <Util.Row gap={2} style={{ alignItems: "flex-start", height: "100%" }}>
         <Util.Col className={styles.gos}>
-          <div onMouseOver={() => setCurrentlyHighlighted("orglegalname")}>
-            <Input
-              label="Organization Legal Name"
-              placeholder="Your legal organization name"
-              value={orgLegalName}
-              onInput={setOrgLegalName}
-              variant={stringIsValid(orgLegalName) ? "default" : "danger"}
-            />
+          <div onMouseOver={() => setCurrentlyHighlighted("mainbannerimg")}>
+            <label className="form-label">Main Banner Image</label>
+            <Util.Row gap={2}>
+              {mainBannerImage?.url ? (
+                <Card
+                  title={
+                    <Util.Row
+                      style={{ justifyContent: "space-between", width: "100%" }}
+                      wrap
+                    >
+                      <Typography.H3
+                        style={{ textOverflow: "ellipsis", maxWidth: "100%" }}
+                      >
+                        {mainBannerImage.name}
+                      </Typography.H3>
+                      <ConsumedUploadBox
+                        onClientUploadComplete={(rec) =>
+                          setMainBannerImage(rec[0])
+                        }
+                        onUploadError={console.error}
+                        onBeforeUploadBegin={async (d) => {
+                          console.log(d[0]);
+                          const c = await compressImage(d[0], 1);
+                          return [c];
+                        }}
+                      />
+                    </Util.Row>
+                  }
+                  style={{ width: "100%", maxWidth: 400 }}
+                >
+                  <img
+                    src={mainBannerImage.url}
+                    style={{
+                      maxWidth: "unset",
+                      width: "calc(100% + 2rem)",
+                      margin: "-1rem",
+                    }}
+                  />
+                </Card>
+              ) : (
+                <ConsumedUploadBox
+                  onClientUploadComplete={(rec) => setMainBannerImage(rec[0])}
+                  onUploadError={console.error}
+                />
+              )}
+            </Util.Row>
+          </div>
+          <Util.Spacer size={2} />
+          <div onMouseOver={() => setCurrentlyHighlighted("mainlogoimg")}>
+            <label className="form-label">Main Logo Image</label>
+            <Util.Row gap={2}>
+              {logoImage?.url ? (
+                <Card
+                  title={
+                    <Util.Row
+                      style={{ justifyContent: "space-between", width: "100%" }}
+                      wrap
+                    >
+                      <Typography.H3
+                        style={{ textOverflow: "ellipsis", maxWidth: "100%" }}
+                      >
+                        {logoImage.name}
+                      </Typography.H3>
+                      <ConsumedUploadBox
+                        onClientUploadComplete={(rec) => setLogoImage(rec[0])}
+                        onUploadError={console.error}
+                        onBeforeUploadBegin={async (d) => {
+                          console.log(d[0]);
+                          const c = await compressImage(d[0], 1, 800, 400);
+                          return [c];
+                        }}
+                      />
+                    </Util.Row>
+                  }
+                  style={{ width: "100%", maxWidth: 400 }}
+                >
+                  <img
+                    src={logoImage.url}
+                    style={{
+                      maxWidth: "unset",
+                      width: "calc(100% + 2rem)",
+                      margin: "-1rem",
+                    }}
+                  />
+                </Card>
+              ) : (
+                <ConsumedUploadBox
+                  onClientUploadComplete={(rec) => setLogoImage(rec[0])}
+                  onUploadError={console.error}
+                />
+              )}
+            </Util.Row>
+          </div>
+          <Util.Spacer size={2} />
+          <div onMouseOver={() => setCurrentlyHighlighted("squarelogoimg")}>
+            <label className="form-label">Square Logo Image</label>
+            <Util.Row gap={2}>
+              {squareLogoImage?.url ? (
+                <Card
+                  title={
+                    <Util.Row
+                      style={{ justifyContent: "space-between", width: "100%" }}
+                      wrap
+                    >
+                      <Typography.H3
+                        style={{ textOverflow: "ellipsis", maxWidth: "100%" }}
+                      >
+                        {squareLogoImage.name}
+                      </Typography.H3>
+                      <ConsumedUploadBox
+                        onClientUploadComplete={(rec) =>
+                          setSquareLogoImage(rec[0])
+                        }
+                        onUploadError={console.error}
+                        onBeforeUploadBegin={async (d) => {
+                          console.log(d[0]);
+                          const c = await compressImage(d[0], 1);
+                          return [c];
+                        }}
+                      />
+                    </Util.Row>
+                  }
+                  style={{ width: "100%", maxWidth: 400 }}
+                >
+                  <img
+                    src={squareLogoImage.url}
+                    style={{
+                      maxWidth: "unset",
+                      width: "calc(100% + 2rem)",
+                      margin: "-1rem",
+                    }}
+                  />
+                </Card>
+              ) : (
+                <ConsumedUploadBox
+                  onClientUploadComplete={(rec) => setSquareLogoImage(rec[0])}
+                  onUploadError={console.error}
+                />
+              )}
+            </Util.Row>
           </div>
         </Util.Col>
         <Util.Col
-          style={{ width: "50%", maxHeight: 450, overflowY: "auto" }}
+          style={{
+            width: "50%",
+            maxHeight: 450,
+            overflowY: "auto",
+            position: "sticky",
+            top: 30,
+          }}
           className={classNames(styles.scg, styles.hos)}
         >
           {switchForHighlight(currentlyHighlighted)}
@@ -137,74 +312,28 @@ const Markteting = () => {
   );
 };
 
-const StateDropdown = ({ value, onChange }) => {
+const ConsumedUploadBox = ({
+  onClientUploadComplete,
+  onUploadError,
+  onBeforeUploadBegin,
+  onUploadBegin,
+}) => {
   return (
-    <DropdownInput
-      prompt="State"
-      values={[
-        { id: "Alabama", label: "Alabama" },
-        { id: "Alaska", label: "Alaska" },
-        { id: "Arizona", label: "Arizona" },
-        { id: "Arkansas", label: "Arkansas" },
-        { id: "California", label: "California" },
-        { id: "Colorado", label: "Colorado" },
-        { id: "Connecticut", label: "Connecticut" },
-        { id: "Delaware", label: "Delaware" },
-        { id: "Florida", label: "Florida" },
-        { id: "Georgia", label: "Georgia" },
-        { id: "Hawaii", label: "Hawaii" },
-        { id: "Idaho", label: "Idaho" },
-        { id: "Illinois", label: "Illinois" },
-        { id: "Indiana", label: "Indiana" },
-        { id: "Iowa", label: "Iowa" },
-        { id: "Kansas", label: "Kansas" },
-        { id: "Kentucky", label: "Kentucky" },
-        { id: "Louisiana", label: "Louisiana" },
-        { id: "Maine", label: "Maine" },
-        { id: "Maryland", label: "Maryland" },
-        { id: "Massachusetts", label: "Massachusetts" },
-
-        { id: "Michigan", label: "Michigan" },
-        { id: "Minnesota", label: "Minnesota" },
-        { id: "Mississippi", label: "Mississippi" },
-        { id: "Missouri", label: "Missouri" },
-        { id: "Montana", label: "Montana" },
-        { id: "Nebraska", label: "Nebraska" },
-        { id: "Nevada", label: "Nevada" },
-        { id: "New Hampshire", label: "New Hampshire" },
-        { id: "New Jersey", label: "New Jersey" },
-        { id: "New Mexico", label: "New Mexico" },
-        { id: "New York", label: "New York" },
-        { id: "North Carolina", label: "North Carolina" },
-        { id: "North Dakota", label: "North Dakota" },
-        { id: "Ohio", label: "Ohio" },
-        { id: "Oklahoma", label: "Oklahoma" },
-        { id: "Oregon", label: "Oregon" },
-        { id: "Pennsylvania", label: "Pennsylvania" },
-        { id: "Rhode Island", label: "Rhode Island" },
-        { id: "South Carolina", label: "South Carolina" },
-        { id: "South Dakota", label: "South Dakota" },
-        { id: "Tennessee", label: "Tennessee" },
-        { id: "Texas", label: "Texas" },
-        { id: "Utah", label: "Utah" },
-        { id: "Vermont", label: "Vermont" },
-        { id: "Virginia", label: "Virginia" },
-        { id: "Washington", label: "Washington" },
-        { id: "West Virginia", label: "West Virginia" },
-        { id: "Wisconsin", label: "Wisconsin" },
-        { id: "Wyoming", label: "Wyoming" },
-        {
-          id: "District of Columbia",
-          label: "District of Columbia",
-        },
-        { id: "Puerto Rico", label: "Puerto Rico" },
-        { id: "Guam", label: "Guam" },
-        { id: "American Samoa", label: "American Samoa" },
-        { id: "U.S. Virgin Islands", label: "U.S. Virgin Islands" },
-        { id: "Northern Mariana Islands", label: "Northern Mariana Islands" },
-      ]}
-      value={value}
-      onChange={onChange}
+    <UploadBox
+      endpoint="imageUploader"
+      onClientUploadComplete={onClientUploadComplete}
+      onUploadError={onUploadError}
+      onBeforeUploadBegin={onBeforeUploadBegin}
+      onUploadBegin={onUploadBegin}
+      className={styles.uploadBox}
+      appearance={{
+        button: `${styles.button}`,
+        allowedContent: `${styles.reset}`,
+      }}
     />
   );
 };
+
+const UploadBox = generateUploadButton({
+  url: "http://localhost:2000/fs/upload",
+});

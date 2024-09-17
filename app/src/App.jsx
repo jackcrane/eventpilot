@@ -13,6 +13,7 @@ import { Footer } from "./components/footer";
 import { Organizations } from "./routes/dashboard/organizations/Index";
 import { NewOrganization } from "./routes/dashboard/organizations/New";
 import { NewOrganizationLegal } from "./routes/dashboard/organizations/Legal";
+import { NewOrganizationMarketing } from "./routes/dashboard/organizations/Marketing";
 
 export default () => {
   return (
@@ -36,6 +37,10 @@ export default () => {
           <Route
             path="/dashboard/organizations/legal"
             element={<NewOrganizationLegal />}
+          />
+          <Route
+            path="/dashboard/organizations/marketing"
+            element={<NewOrganizationMarketing />}
           />
         </Routes>
       </Router>

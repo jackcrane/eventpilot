@@ -21,7 +21,8 @@
     "jsonwebtoken": "^9.0.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "resend": "^4.0.0"
+    "resend": "^4.0.0",
+    "uploadthing": "https://pkg.pr.new/pingdotgg/uploadthing@954"
   },
   "devDependencies": {
     "prisma": "5.19.1"

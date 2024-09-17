@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography } from "tabler-react-2";
+import { Card, Typography, Util } from "tabler-react-2";
 import { useUser } from "../../../util/UserProvider";
 import { Spinner } from "tabler-react-2/dist/spinner";
 import { Page } from "../../../components/page";
@@ -7,6 +7,9 @@ import { useOrgs } from "../../../hooks/useOrgs";
 import { Loading } from "../../../components/loading";
 import { Button } from "tabler-react-2/dist/button";
 const { H1, H2, H3, Text } = Typography;
+import styles from "./orgs.module.css";
+import { Link } from "react-router-dom";
+import { IconPlus } from "@tabler/icons-react";
 
 export const Organizations = () => {
   const { user, loading } = useUser(true);
@@ -35,7 +38,13 @@ export const Organizations = () => {
           { type: "item", href: "/dashboard/support", text: "Support" },
         ]}
       >
-        <H1>Organizations</H1>
+        <Util.Row align="between">
+          <H1>Organizations</H1>
+          <Button href="/dashboard/organizations/new">
+            <IconPlus size={16} />
+            Create a new Organization
+          </Button>
+        </Util.Row>
         {orgsLoading ? (
           <Loading />
         ) : (
@@ -48,9 +57,25 @@ export const Organizations = () => {
                 </Button>
               </div>
             )}
-            {orgs.map((org) => (
-              <></>
-            ))}
+            <Util.Row wrap gap={1}>
+              {orgs.map((org) => (
+                <>
+                  <Link
+                    to={`/dashboard/organizations/new?orgId=${org.id}`}
+                    className={styles.orgcardlink}
+                  >
+                    <Card
+                      style={{
+                        backgroundImage: `radial-gradient(at left top, rgba(255,255,255,0.9) 40%, rgba(255,255,255,0.3)), url(${org.marketingPrimaryBannerImage?.url})`,
+                      }}
+                      className={styles.orgcard}
+                    >
+                      <H2>{org.name}</H2>
+                    </Card>
+                  </Link>
+                </>
+              ))}
+            </Util.Row>
           </>
         )}
       </Page>

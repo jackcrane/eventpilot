@@ -16,7 +16,7 @@ import { switchForHighlight } from "./Legal.content.jsx";
 import classNames from "classnames";
 import { validateEmail } from "../../../util/validateEmail.js";
 import { useOrg } from "../../../hooks/useOrg.js";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export const NewOrganizationLegal = () => {
   return (
@@ -73,6 +73,8 @@ const Legal = () => {
     }
   }, [org]);
 
+  const navigate = useNavigate();
+
   const handleNext = async () => {
     const data = {
       legalName: orgLegalName,
@@ -89,8 +91,9 @@ const Legal = () => {
 
     const [response, error] = await update(data);
 
-    if (response) {
+    if (response?.id) {
       console.log("Successfully updated org", response);
+      navigate(`/dashboard/organizations/marketing?orgId=${org.id}`);
     }
     if (error) {
       console.error("Error updating org", error);

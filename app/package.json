@@ -10,13 +10,15 @@
   },
   "dependencies": {
     "@tabler/icons-react": "^3.16.0",
+    "@uploadthing/react": "^7.0.1",
     "add": "^2.0.6",
     "axios": "^1.7.7",
     "crypto-js": "^4.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.26.2",
-    "tabler-react-2": "^0.1.23",
+    "tabler-react-2": "^0.1.25",
+    "uploadthing": "^7.0.1",
     "yarn": "^1.22.22"
   },
   "devDependencies": {

@@ -40,33 +40,28 @@ export const NewOrganizationSkeleton = ({ children, activeStep }) => {
               text: "Basic information",
               active: activeStep === 0,
               href:
-                activeStep === 0
+                !orgId && activeStep === 0
                   ? null
                   : `/dashboard/organizations/new${orgIdUrl}`,
             },
             {
               text: "Legal details (optional)",
               active: activeStep === 1,
-              href:
-                activeStep <= 1
-                  ? null
-                  : `/dashboard/organizations/legal${orgIdUrl}`,
+              href: !orgId ? null : `/dashboard/organizations/legal${orgIdUrl}`,
             },
             {
               text: "Marketing content",
               active: activeStep === 2,
-              href:
-                activeStep <= 2
-                  ? null
-                  : `/dashboard/organizations/marketing${orgIdUrl}`,
+              href: !orgId
+                ? null
+                : `/dashboard/organizations/marketing${orgIdUrl}`,
             },
             {
               text: "Invite your team",
               active: activeStep === 3,
-              href:
-                activeStep <= 3
-                  ? null
-                  : `/dashboard/organizations/invite${orgIdUrl}`,
+              href: !orgId
+                ? null
+                : `/dashboard/organizations/invite${orgIdUrl}`,
             },
           ]}
           numbered
