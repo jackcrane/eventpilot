@@ -56,13 +56,13 @@ export const NewOrganizationSkeleton = ({ children, activeStep }) => {
                 ? null
                 : `/dashboard/organizations/marketing${orgIdUrl}`,
             },
-            {
-              text: "Invite your team",
-              active: activeStep === 3,
-              href: !orgId
-                ? null
-                : `/dashboard/organizations/invite${orgIdUrl}`,
-            },
+            // {
+            //   text: "Invite your team",
+            //   active: activeStep === 3,
+            //   href: !orgId
+            //     ? null
+            //     : `/dashboard/organizations/invite${orgIdUrl}`,
+            // },
           ]}
           numbered
         />

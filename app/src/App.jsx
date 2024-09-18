@@ -14,6 +14,7 @@ import { Organizations } from "./routes/dashboard/organizations/Index";
 import { NewOrganization } from "./routes/dashboard/organizations/New";
 import { NewOrganizationLegal } from "./routes/dashboard/organizations/Legal";
 import { NewOrganizationMarketing } from "./routes/dashboard/organizations/Marketing";
+import { Events } from "./routes/dashboard/events";
 
 export default () => {
   return (
@@ -42,6 +43,8 @@ export default () => {
             path="/dashboard/organizations/marketing"
             element={<NewOrganizationMarketing />}
           />
+
+          <Route path="/dashboard/events" element={<Events />} />
         </Routes>
       </Router>
       <Footer />

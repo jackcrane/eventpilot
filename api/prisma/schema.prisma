@@ -16,12 +16,13 @@ model User {
   updatedAt DateTime @updatedAt
 
   // Relations
-  otps                            Otp[]
-  logs                            Log[]
-  organizations                   UserOrganization[]
-  organizationInvitationsSent     OrganizationInvitation[] @relation("InvitationsSent")
-  organizationInvitationsReceived OrganizationInvitation[] @relation("InvitationsReceived")
+  otps                  Otp[]
+  logs                  Log[]
+  organizations         UserOrganization[]
+  eventInvitationsSent  EventInvitation[] @relation("InvitationsSent")
+  eventInvitationsReceived EventInvitation[] @relation("InvitationsReceived")
 }
+
 
 model Otp {
   id        String   @id @default(cuid())
@@ -81,10 +82,11 @@ model Organization {
 
   // Relations
   users       UserOrganization[]
-  invitations OrganizationInvitation[]
+  events      Event[]
+  logs        Log[]
 }
 
-model OrganizationInvitation {
+model EventInvitation {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -92,8 +94,8 @@ model OrganizationInvitation {
   status InvitationStatus @default(PENDING)
 
   // Relations
-  organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  eventId String
+  event   Event @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   invitedByUserId String
   invitedByUser   User   @relation("InvitationsSent", fields: [invitedByUserId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -107,6 +109,24 @@ enum InvitationStatus {
   ACCEPTED
   REJECTED
   REVOKED
+}
+
+model Event {
+  id        String   @id @default(cuid())
+
+  name      String
+  description String
+  startDate DateTime
+  endDate   DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  invitations    EventInvitation[]
+  logs          Log[]
 }
 
 model Log {
@@ -124,6 +144,12 @@ model Log {
 
   LogType LogType? @relation(fields: [type], references: [name], onDelete: Cascade, onUpdate: Cascade)
   type    String?
+
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  eventId String?
+  event   Event? @relation(fields: [eventId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 }
 
 model LogType {

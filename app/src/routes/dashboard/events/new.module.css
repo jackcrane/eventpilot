@@ -1,0 +1,87 @@
+.scg {
+  mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+}
+
+.gos {
+  width: 50%;
+}
+.sos {
+  display: none;
+}
+
+@media screen and (max-width: 600px) {
+  .hos {
+    display: none;
+  }
+  .gos {
+    width: 100%;
+  }
+  .sos {
+    display: block;
+  }
+}
+
+.uploadBox {
+  all: unset !important;
+  color: var(--tblr-body-color);
+  display: flex;
+  flex-direction: column;
+}
+
+.uploadBox label {
+  color: var(--tblr-gray-400);
+}
+
+.reset {
+  all: unset !important;
+  display: none !important;
+}
+
+.button {
+  background-color: var(--tblr-bg-surface) !important;
+  --tblr-btn-padding-x: 1rem !important;
+  --tblr-btn-padding-y: 0.4375rem !important;
+  --tblr-btn-font-family: var(--tblr-font-sans-serif) !important;
+  --tblr-btn-font-size: 0.875rem !important;
+  --tblr-btn-font-weight: var(--tblr-font-weight-medium) !important;
+  --tblr-btn-line-height: 1.4285714286 !important;
+  --tblr-btn-color: #1d273b !important;
+  --tblr-btn-bg: transparent !important;
+  --tblr-btn-border-width: var(--tblr-border-width) !important;
+  --tblr-btn-border-color: var(--tblr-border-color) !important;
+  --tblr-btn-border-radius: var(--tblr-border-radius) !important;
+  --tblr-btn-hover-border-color: transparent !important;
+  --tblr-btn-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 1px 1px rgba(0, 0, 0, 0.075) !important;
+  --tblr-btn-disabled-opacity: 0.4 !important;
+  --tblr-btn-focus-box-shadow: 0 0 0 0.25rem
+    rgba(var(--tblr-btn-focus-shadow-rgb), 0.5) !important;
+  display: inline-block !important;
+  padding: var(--tblr-btn-padding-y) var(--tblr-btn-padding-x) !important;
+  font-family: var(--tblr-btn-font-family) !important;
+  font-size: var(--tblr-btn-font-size) !important;
+  font-weight: var(--tblr-btn-font-weight) !important;
+  line-height: var(--tblr-btn-line-height) !important;
+  color: var(--tblr-btn-color) !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+  cursor: pointer !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+  border: var(--tblr-btn-border-width) solid var(--tblr-btn-border-color) !important;
+  border-radius: var(--tblr-btn-border-radius) !important;
+  background-color: var(--tblr-btn-bg) !important;
+  box-shadow: var(--tblr-btn-box-shadow) !important;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+  background-color: var(--tblr-bg-surface) !important;
+}
+
+.button:hover {
+  color: var(--tblr-btn-hover-color) !important;
+  text-decoration: none !important;
+  background-color: #fff !important;
+  border-color: #b3b7bd !important;
+}

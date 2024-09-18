@@ -1,3 +1,4 @@
+import { log } from "../../util/log.js";
 import { prisma } from "../../util/prisma.js";
 import { requireAuth } from "../../util/requireAuth.js";
 
@@ -59,6 +60,7 @@ export const put = [
             },
           },
         },
+        include,
       });
 
       if (!org) {
@@ -122,6 +124,22 @@ export const put = [
       });
 
       res.json(updatedOrg);
+
+      if (
+        JSON.stringify(org) === JSON.stringify(updatedOrg)
+      ) return;
+
+      log({
+        type: "ORG_MODIFIED",
+        userId: req.user.id,
+        organizationId: req.params.orgId,
+        data: {
+          diff: {
+            from: org,
+            to: updatedOrg,
+          },
+        },
+      });
     } catch (e) {
       console.error(e);
       res.status(500).json({ message: "Internal server error" });

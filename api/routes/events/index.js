@@ -1,7 +1,7 @@
-import { log } from "../../util/log.js";
 import { prisma } from "../../util/prisma.js";
 import { requireAuth } from "../../util/requireAuth.js";
 import { validateEmail } from "../../util/validateEmail.js";
+/*
 import { include } from "./[orgId].js";
 
 export const get = [
@@ -9,7 +9,7 @@ export const get = [
   async (req, res) => {
     const userId = req.user.id;
 
-    const orgs = await prisma.organization.findMany({
+    const orgs = await prisma.event.findMany({
       where: {
         users: {
           some: {
@@ -82,14 +82,10 @@ export const post = [
       });
 
       res.json(org);
-
-      log({
-        type: "ORG_CREATED",
-        userId,
-      });
     } catch (err) {
       console.error(err);
       res.status(400).json({ message: "Something went wrong." });
     }
   },
 ];
+*/
