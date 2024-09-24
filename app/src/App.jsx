@@ -15,6 +15,7 @@ import { NewOrganization } from "./routes/dashboard/organizations/New";
 import { NewOrganizationLegal } from "./routes/dashboard/organizations/Legal";
 import { NewOrganizationMarketing } from "./routes/dashboard/organizations/Marketing";
 import { Events } from "./routes/dashboard/events";
+import { OrganizationHome } from "./routes/dashboard/organizations/[organizationId]";
 
 export default () => {
   return (
@@ -32,6 +33,10 @@ export default () => {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dashboard/organizations" element={<Organizations />} />
           <Route
+            path="/dashboard/organizations/:organizationId"
+            element={<OrganizationHome />}
+          />
+          <Route
             path="/dashboard/organizations/new"
             element={<NewOrganization />}
           />
@@ -45,6 +50,7 @@ export default () => {
           />
 
           <Route path="/dashboard/events" element={<Events />} />
+
         </Routes>
       </Router>
       <Footer />

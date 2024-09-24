@@ -1,6 +1,6 @@
-import { log } from "../../util/log.js";
-import { prisma } from "../../util/prisma.js";
-import { requireAuth } from "../../util/requireAuth.js";
+import { log } from "../../../util/log.js";
+import { prisma } from "../../../util/prisma.js";
+import { requireAuth } from "../../../util/requireAuth.js";
 
 export const include = {
   marketingPrimaryBannerImage: {
@@ -125,9 +125,7 @@ export const put = [
 
       res.json(updatedOrg);
 
-      if (
-        JSON.stringify(org) === JSON.stringify(updatedOrg)
-      ) return;
+      if (JSON.stringify(org) === JSON.stringify(updatedOrg)) return;
 
       log({
         type: "ORG_MODIFIED",

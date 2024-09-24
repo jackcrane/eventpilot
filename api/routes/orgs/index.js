@@ -2,7 +2,7 @@ import { log } from "../../util/log.js";
 import { prisma } from "../../util/prisma.js";
 import { requireAuth } from "../../util/requireAuth.js";
 import { validateEmail } from "../../util/validateEmail.js";
-import { include } from "./[orgId].js";
+import { include } from "./[orgId]/index.js";
 
 export const get = [
   requireAuth,

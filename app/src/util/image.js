@@ -1,8 +1,8 @@
 export const compressImage = (
   file,
   quality = 1,
-  width = 1920,
-  height = 1080
+  _width = 1920,
+  _height = 1080
 ) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -13,8 +13,8 @@ export const compressImage = (
         const ctx = canvas.getContext("2d");
 
         // Resize image (set max width/height)
-        const maxWidth = width;
-        const maxHeight = height;
+        const maxWidth = _width;
+        const maxHeight = _height;
         let width = img.width;
         let height = img.height;
 
