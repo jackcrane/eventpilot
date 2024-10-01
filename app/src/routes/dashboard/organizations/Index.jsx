@@ -61,7 +61,7 @@ export const Organizations = () => {
               {orgs.map((org) => (
                 <>
                   <Link
-                    to={`/dashboard/organizations/new?orgId=${org.id}`}
+                    to={`/dashboard/organizations/${org.id}`}
                     className={styles.orgcardlink}
                   >
                     <Card

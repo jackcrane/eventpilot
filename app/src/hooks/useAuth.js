@@ -25,6 +25,10 @@ const useAuth = () => {
       } else {
         setUser(null);
         setIsLoggedIn(false);
+        localStorage.removeItem("token");
+        if (!document.location.pathname.includes("/auth")) {
+          document.location.href = "/auth/login";
+        }
       }
     } catch (error) {
       setUser(null);

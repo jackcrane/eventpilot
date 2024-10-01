@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import logo from "../assets/logo-horizontal-100.png";
 import styles from "./header.module.css";
 import useAuth from "../hooks/useAuth";

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Typography, Util, Input, DropdownInput } from "tabler-react-2";
-import { useUser } from "../../../util/UserProvider";
-import { Spinner } from "tabler-react-2/dist/spinner";
-import { Page } from "../../../components/page";
-import { useOrgs } from "../../../hooks/useOrgs";
-import { Loading } from "../../../components/loading";
 import { Button } from "tabler-react-2/dist/button";
 import Steps from "tabler-react-2/dist/steps";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { IconArrowLeft, IconArrowRight, IconResize } from "@tabler/icons-react";
 const { H1, H2, H3, H4, Text, I, B } = Typography;
 import styles from "./new.module.css";
@@ -17,37 +17,46 @@ import { validateEmail } from "../../../util/validateEmail.js";
 import { useOrg } from "../../../hooks/useOrg.js";
 import { NewOrganizationSkeleton } from "../../../components/newOrganizationSkeleton.jsx";
 import { switchForHighlight } from "./New.Content.jsx";
+import { sidenavItems } from "./[organizationId]/index.jsx";
+import { Page } from "../../../components/page.jsx";
+import { Loading } from "../../../components/loading.jsx";
+import toast from "react-hot-toast";
 
 export const NewOrganization = () => {
+  return <BasicInformation />;
+};
+
+export const OrganizationBasics = () => {
+  const { organizationId } = useParams();
+
   return (
-    <NewOrganizationSkeleton activeStep={0}>
+    <Page sidenavItems={sidenavItems(organizationId, "Basic Information")}>
       <BasicInformation />
-    </NewOrganizationSkeleton>
+    </Page>
   );
 };
 
 const BasicInformation = () => {
   const [currentlyHighlighted, setCurrentlyHighlighted] = useState("");
 
-  const [searchParams] = useSearchParams();
-  const orgId = searchParams.get("orgId");
+  const { organizationId: orgId } = useParams();
 
   const { loading, create, org, error: orgError, upsert } = useOrg(orgId);
 
   const [orgName, setOrgName] = useState(org?.name || "");
   const [orgWebsite, setOrgWebsite] = useState(org?.website || "");
   const [orgPublicEmail, setOrgPublicEmail] = useState(
-    org?.publicContactEmail || "",
+    org?.publicContactEmail || ""
   );
   const [orgPrivateEmail, setOrgPrivateEmail] = useState(
-    org?.privateContactEmail || "",
+    org?.privateContactEmail || ""
   );
   const [orgPhone, setOrgPhone] = useState(org?.privateContactPhone || "");
   const [orgCategory, setOrgCategory] = useState(
     { id: org?.category } || {
       id: "",
       label: "Select",
-    },
+    }
   );
 
   const stringIsValid = (str) => {
@@ -91,7 +100,9 @@ const BasicInformation = () => {
 
     if (invalidFields.length > 0) {
       setError(
-        `The following fields are invalid: ${invalidFields.join(", ")}. Please fix them before continuing.`,
+        `The following fields are invalid: ${invalidFields.join(
+          ", "
+        )}. Please fix them before continuing.`
       );
       setShouldDangerEmptyFields(true);
       return;
@@ -108,11 +119,19 @@ const BasicInformation = () => {
     });
 
     if (org?.id) {
-      navigate(`/dashboard/organizations/legal?orgId=${org.id}`);
+      if (orgId) {
+        toast.success("Organization updated successfully");
+      } else {
+        navigate(`/dashboard/organizations/${org.id}`);
+      }
     } else {
       setError(error);
     }
   };
+
+  if (orgId && loading) {
+    return <Loading />;
+  }
 
   return (
     <div>
@@ -270,11 +289,12 @@ const BasicInformation = () => {
           disabled={loading}
         >
           <Util.Row gap={1}>
-            Save & Next Step
+            Save{!orgId && " & Continue to dashboard"}
             <IconArrowRight size={16} />
           </Util.Row>
         </Button>
       </Util.Row>
+      <Util.Spacer size={1} />
     </div>
   );
 };

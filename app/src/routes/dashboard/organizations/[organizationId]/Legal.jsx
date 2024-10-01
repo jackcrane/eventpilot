@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { NewOrganizationSkeleton } from "../../../components/newOrganizationSkeleton.jsx";
 import { IconArrowRight, IconResize } from "@tabler/icons-react";
 import {
   Alert,
@@ -10,26 +9,31 @@ import {
   Switch,
   Button,
 } from "tabler-react-2";
-import styles from "./new.module.css";
+import styles from "../new.module.css";
 import classNames from "classnames";
-import { validateEmail } from "../../../util/validateEmail.js";
-import { useOrg } from "../../../hooks/useOrg.js";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { validateEmail } from "../../../../util/validateEmail.js";
+import { useOrg } from "../../../../hooks/useOrg.js";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { switchForHighlight } from "./Legal.content.jsx";
+import { Page } from "../../../../components/page.jsx";
+import { sidenavItems } from "./index.jsx";
+import { Loading } from "../../../../components/loading.jsx";
+import toast from "react-hot-toast";
 
 const { H2, Text, B } = Typography;
 
-export const NewOrganizationLegal = () => {
+export const OrganizationLegal = () => {
+  const { organizationId } = useParams();
+
   return (
-    <NewOrganizationSkeleton activeStep={1}>
+    <Page sidenavItems={sidenavItems(organizationId, "Legal Information")}>
       <Legal />
-    </NewOrganizationSkeleton>
+    </Page>
   );
 };
 
 const Legal = () => {
-  const [searchParams] = useSearchParams();
-  const orgId = searchParams.get("orgId");
+  const { organizationId: orgId } = useParams();
   const { error, loading, update, org } = useOrg(orgId);
   const navigate = useNavigate();
 
@@ -101,7 +105,8 @@ const Legal = () => {
     const [response, error] = await update(data);
 
     if (response?.id) {
-      navigate(`/dashboard/organizations/marketing?orgId=${org.id}`);
+      // navigate(`/dashboard/organizations/marketing?orgId=${org.id}`);
+      toast.success("Organization updated successfully");
     }
     if (error) {
       console.error("Error updating org", error);
@@ -130,7 +135,6 @@ const Legal = () => {
     />
   );
 
-
   const renderAddressFields = () => (
     <>
       {renderInput({
@@ -143,13 +147,13 @@ const Legal = () => {
         value: formState.streetAddress2,
         onChange: handleInputChange("streetAddress2"),
       })}
-      <Util.Row gap={1} style={{alignItems: "flex-end"}}>
+      <Util.Row gap={1} style={{ alignItems: "flex-end" }}>
         {renderInput({
           label: "City",
           value: formState.addressCity,
           onChange: handleInputChange("addressCity"),
           style: { flex: 1 },
-          className:"mb-0"
+          className: "mb-0",
         })}
         <StateDropdown
           value={formState.addressState}
@@ -166,6 +170,10 @@ const Legal = () => {
       </Util.Row>
     </>
   );
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <div>
@@ -193,24 +201,20 @@ const Legal = () => {
       <Util.Row gap={2} style={{ alignItems: "flex-start", height: "100%" }}>
         <Util.Col className={styles.gos}>
           <div onMouseOver={() => setCurrentlyHighlighted("orglegalname")}>
-            {renderInput(
-              {
-                label: "Organization Legal Name",
-                value: formState.orgLegalName,
-                onChange: handleInputChange("orgLegalName"),
-                placeholder: "Your legal organization name",
-              }
-            )}
+            {renderInput({
+              label: "Organization Legal Name",
+              value: formState.orgLegalName,
+              onChange: handleInputChange("orgLegalName"),
+              placeholder: "Your legal organization name",
+            })}
           </div>
           <div onMouseOver={() => setCurrentlyHighlighted("tin")}>
-            {renderInput(
-              {
-                label: "Tax Identification Number",
-                value: formState.tin,
-                onChange: handleInputChange("tin"),
-                placeholder: "TIN, EIN, or other relevant tax ID",
-              }
-            )}
+            {renderInput({
+              label: "Tax Identification Number",
+              value: formState.tin,
+              onChange: handleInputChange("tin"),
+              placeholder: "TIN, EIN, or other relevant tax ID",
+            })}
           </div>
           <div onMouseOver={() => setCurrentlyHighlighted("orgtype")}>
             <label className="form-label">Type of organization</label>
@@ -241,16 +245,14 @@ const Legal = () => {
           </div>
           <Util.Spacer size={2} />
           <div onMouseOver={() => setCurrentlyHighlighted("legalcontact")}>
-            {renderInput(
-              {
-                label: "Legal Contact Email",
-                value: formState.legalContact,
-                onChange: handleInputChange("legalContact"),
-                placeholder: "Email address for legal contact",
-                type: "email",
-                validator: (email) => validateEmail(email, true),
-              }
-            )}
+            {renderInput({
+              label: "Legal Contact Email",
+              value: formState.legalContact,
+              onChange: handleInputChange("legalContact"),
+              placeholder: "Email address for legal contact",
+              type: "email",
+              validator: (email) => validateEmail(email, true),
+            })}
           </div>
         </Util.Col>
         <Util.Col
@@ -284,7 +286,7 @@ const Legal = () => {
           disabled={loading}
         >
           <Util.Row gap={1}>
-            Save & Next Step
+            Save
             <IconArrowRight size={16} />
           </Util.Row>
         </Button>

@@ -16,10 +16,12 @@
     "crypto-js": "^4.2.0",
     "moment": "^2.30.1",
     "react": "^18.2.0",
+    "react-beautiful-dnd": "^13.1.1",
     "react-diff-viewer": "^3.1.1",
     "react-dom": "^18.2.0",
+    "react-hot-toast": "^2.4.1",
     "react-router-dom": "^6.26.2",
-    "tabler-react-2": "^0.1.25",
+    "tabler-react-2": "^0.1.27",
     "uploadthing": "^7.0.1",
     "yarn": "^1.22.22"
   },

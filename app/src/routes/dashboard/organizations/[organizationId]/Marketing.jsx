@@ -1,61 +1,60 @@
 import React, { createRef, useEffect, useState } from "react";
-import { NewOrganizationSkeleton } from "../../../components/newOrganizationSkeleton.jsx";
+import { NewOrganizationSkeleton } from "../../../../components/newOrganizationSkeleton.jsx";
 import { IconArrowRight, IconResize } from "@tabler/icons-react";
 import { Alert } from "tabler-react-2/dist/alert/index.js";
-import {
-  Typography,
-  Util,
-  Input,
-  DropdownInput,
-  Switch,
-  Button,
-  Card,
-} from "tabler-react-2";
+import { Typography, Util, Input, Button, Card } from "tabler-react-2";
 const { H1, H2, Text, B } = Typography;
-import styles from "./new.module.css";
+import styles from "../new.module.css";
 import { switchForHighlight } from "./Marketing.content.jsx";
 import classNames from "classnames";
-import { validateEmail } from "../../../util/validateEmail.js";
-import { useOrg } from "../../../hooks/useOrg.js";
-import { useSearchParams } from "react-router-dom";
-import {
-  generateUploadButton,
-  generateUploadDropzone,
-} from "@uploadthing/react";
+import { useOrg } from "../../../../hooks/useOrg.js";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { generateUploadButton } from "@uploadthing/react";
 import "@uploadthing/react/styles.css";
-import { compressImage } from "../../../util/image.js";
+import { compressImage } from "../../../../util/image.js";
+import { Page } from "../../../../components/page.jsx";
+import { sidenavItems } from "./index.jsx";
+import { Loading } from "../../../../components/loading.jsx";
+import toast from "react-hot-toast";
 
-export const NewOrganizationMarketing = () => {
+export const OrganizationMarketing = () => {
+  const { organizationId } = useParams();
+
   return (
-    <NewOrganizationSkeleton activeStep={2}>
+    <Page sidenavItems={sidenavItems(organizationId, "Marketing Information")}>
       <Marketing />
-    </NewOrganizationSkeleton>
+    </Page>
   );
 };
 
-const Marketing = () => {
-  const [searchParams] = useSearchParams();
-  const orgId = searchParams.get("orgId");
+export const Marketing = ({ passedInOrgId }) => {
+  const { organizationId: orgId } = useParams();
   const { error, loading, update, org } = useOrg(orgId);
 
-  const [mainBannerImage, setMainBannerImage] = useState(
-    org?.marketingPrimaryBannerImage ? org.marketingPrimaryBannerImage : null
-  );
-  const [logoImage, setLogoImage] = useState(
-    org?.marketingLogo ? org.marketingLogo : null
-  );
-  const [squareLogoImage, setSquareLogoImage] = useState(
-    org?.marketingSquareLogo ? org.marketingSquareLogo : null
-  );
+  const navigate = useNavigate();
+
+  const [formState, setFormState] = useState({
+    mainBannerImage: null,
+    logoImage: null,
+    squareLogoImage: null,
+  });
+
+  const { mainBannerImage, logoImage, squareLogoImage } = formState;
+
+  const updateFormState = (field, value) => {
+    setFormState((prevState) => ({ ...prevState, [field]: value }));
+  };
 
   const stringIsValid = (str) => {
     if (!shouldDangerEmptyFields) return true;
     return str && str.length > 0;
   };
+
   const urlIsValid = (url, allowEmpty = false) => {
     if (allowEmpty && url.length === 0) return true;
     return url && url.includes(".");
   };
+
   const phoneIsValid = (phone, allowEmpty = false) => {
     if (allowEmpty && phone.length === 0) return true;
     return phone && phone.length > 9;
@@ -66,9 +65,11 @@ const Marketing = () => {
 
   useEffect(() => {
     if (org?.id) {
-      setMainBannerImage(org.marketingPrimaryBannerImage);
-      setLogoImage(org.marketingLogo);
-      setSquareLogoImage(org.marketingSquareLogo);
+      setFormState({
+        mainBannerImage: org.marketingPrimaryBannerImage || null,
+        logoImage: org.marketingLogo || null,
+        squareLogoImage: org.marketingSquareLogo || null,
+      });
     }
   }, [org]);
 
@@ -95,11 +96,39 @@ const Marketing = () => {
 
     if (response) {
       console.log("Successfully updated org", response);
+      // navigate(`/dashboard/organizations/${orgId}`);
+      toast.success("Organization updated successfully");
     }
     if (error) {
       console.error("Error updating org", error);
     }
   };
+
+  const renderInput = ({
+    label,
+    value,
+    onChange,
+    placeholder = "",
+    type = "text",
+    validator = () => true,
+    className = "",
+    style = {},
+  }) => (
+    <Input
+      label={label}
+      placeholder={placeholder}
+      value={value}
+      onInput={onChange}
+      type={type}
+      variant={validator(value) ? "default" : "danger"}
+      className={className}
+      style={style}
+    />
+  );
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <div>
@@ -141,11 +170,10 @@ const Marketing = () => {
                       </Typography.H3>
                       <ConsumedUploadBox
                         onClientUploadComplete={(rec) =>
-                          setMainBannerImage(rec[0])
+                          updateFormState("mainBannerImage", rec[0])
                         }
                         onUploadError={console.error}
                         onBeforeUploadBegin={async (d) => {
-                          console.log(d[0]);
                           const c = await compressImage(d[0], 1);
                           return [c];
                         }}
@@ -165,7 +193,9 @@ const Marketing = () => {
                 </Card>
               ) : (
                 <ConsumedUploadBox
-                  onClientUploadComplete={(rec) => setMainBannerImage(rec[0])}
+                  onClientUploadComplete={(rec) =>
+                    updateFormState("mainBannerImage", rec[0])
+                  }
                   onUploadError={console.error}
                 />
               )}
@@ -188,10 +218,11 @@ const Marketing = () => {
                         {logoImage.name}
                       </Typography.H3>
                       <ConsumedUploadBox
-                        onClientUploadComplete={(rec) => setLogoImage(rec[0])}
+                        onClientUploadComplete={(rec) =>
+                          updateFormState("logoImage", rec[0])
+                        }
                         onUploadError={console.error}
                         onBeforeUploadBegin={async (d) => {
-                          console.log(d[0]);
                           const c = await compressImage(d[0], 1, 800, 400);
                           return [c];
                         }}
@@ -211,7 +242,9 @@ const Marketing = () => {
                 </Card>
               ) : (
                 <ConsumedUploadBox
-                  onClientUploadComplete={(rec) => setLogoImage(rec[0])}
+                  onClientUploadComplete={(rec) =>
+                    updateFormState("logoImage", rec[0])
+                  }
                   onUploadError={console.error}
                 />
               )}
@@ -235,11 +268,10 @@ const Marketing = () => {
                       </Typography.H3>
                       <ConsumedUploadBox
                         onClientUploadComplete={(rec) =>
-                          setSquareLogoImage(rec[0])
+                          updateFormState("squareLogoImage", rec[0])
                         }
                         onUploadError={console.error}
                         onBeforeUploadBegin={async (d) => {
-                          console.log(d[0]);
                           const c = await compressImage(d[0], 1);
                           return [c];
                         }}
@@ -259,7 +291,9 @@ const Marketing = () => {
                 </Card>
               ) : (
                 <ConsumedUploadBox
-                  onClientUploadComplete={(rec) => setSquareLogoImage(rec[0])}
+                  onClientUploadComplete={(rec) =>
+                    updateFormState("squareLogoImage", rec[0])
+                  }
                   onUploadError={console.error}
                 />
               )}
@@ -303,7 +337,7 @@ const Marketing = () => {
           disabled={loading}
         >
           <Util.Row gap={1}>
-            Save & Next Step
+            Save
             <IconArrowRight size={16} />
           </Util.Row>
         </Button>

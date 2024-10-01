@@ -21,6 +21,7 @@ model User {
   organizations         UserOrganization[]
   eventInvitationsSent  EventInvitation[] @relation("InvitationsSent")
   eventInvitationsReceived EventInvitation[] @relation("InvitationsReceived")
+  todoItems             TodoItem[]
 }
 
 
@@ -84,6 +85,7 @@ model Organization {
   users       UserOrganization[]
   events      Event[]
   logs        Log[]
+  todoItems    TodoItem[]
 }
 
 model EventInvitation {
@@ -127,6 +129,7 @@ model Event {
 
   invitations    EventInvitation[]
   logs          Log[]
+  todoItems      TodoItem[]
 }
 
 model Log {
@@ -134,7 +137,7 @@ model Log {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  data Json
+  data Json?
 
   userId String?
   user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
@@ -150,6 +153,9 @@ model Log {
 
   eventId String?
   event   Event? @relation(fields: [eventId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  todoItemId String?
+  todoItem   TodoItem? @relation(fields: [todoItemId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 }
 
 model LogType {
@@ -169,4 +175,46 @@ model Image {
   organizationPrimaryBannerImage    Organization? @relation("marketingPrimaryBannerImage")
   organizationLogoImage  Organization? @relation("marketingLogo")
   organizationSquareLogo            Organization? @relation("marketingSquareLogo")
+}
+
+model TodoItem {
+  id String @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  dueDate DateTime?
+
+  todoType TodoItemType @relation(fields: [type], references: [name])
+  type String
+
+  title String
+  text String  @db.Text
+  slug String?
+  href  String?
+
+  stage TodoItemStage @default(OPEN)
+
+  user User? @relation(fields: [userId], references: [id])
+  userId String?
+
+  organization Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
+
+  event Event? @relation(fields: [eventId], references: [id])
+  eventId String?
+
+  logs Log[]
+}
+
+model TodoItemType {
+  name String @id
+  todoItems TodoItem[]
+}
+
+enum TodoItemStage {
+  OPEN
+  IN_PROGRESS
+  WAITING
+  BLOCKED
+  COMPLETE
+  WONT_DO
 }
