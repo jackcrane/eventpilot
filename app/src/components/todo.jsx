@@ -108,10 +108,18 @@ export const Todo = ({
   const { organizationId } = useParams();
   const [stage, setStage] = useState({});
 
-  const { todo, updateTodoStage } = useTodo(organizationId, todoItem.id, {
-    todoItem,
-    selfRefreshing: true,
-  });
+  const { todo, updateTodoStage, refetch } = useTodo(
+    organizationId,
+    todoItem.id,
+    {
+      todoItem,
+      selfRefreshing: true,
+    }
+  );
+
+  useEffect(() => {
+    refetch();
+  }, [todoItem]);
 
   return (
     <Card
@@ -185,7 +193,7 @@ export const Todo = ({
   );
 };
 
-const TodoKanban = ({ todos, showAllStages = true, onDragEnd }) => {
+const TodoKanban = ({ todos, showAllStages = true, onDragEnd, isSmall }) => {
   const allStages = [
     "OPEN",
     "IN_PROGRESS",
@@ -209,7 +217,7 @@ const TodoKanban = ({ todos, showAllStages = true, onDragEnd }) => {
                 <Card
                   key={stage}
                   title={switchStageForColor(stage).text}
-                  style={{ width: 300, height: "70vh" }}
+                  style={{ width: 300, height: isSmall ? "70vh" : "90vh" }}
                   className={classNames(
                     styles.stripeBg,
                     switchStageForColor(stage).class,

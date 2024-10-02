@@ -21,7 +21,7 @@
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.1",
     "react-router-dom": "^6.26.2",
-    "tabler-react-2": "^0.1.27",
+    "tabler-react-2": "^0.1.28",
     "uploadthing": "^7.0.1",
     "yarn": "^1.22.22"
   },

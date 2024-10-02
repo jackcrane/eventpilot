@@ -26,6 +26,8 @@ import { Events } from "./routes/dashboard/events";
 import { OrganizationHome } from "./routes/dashboard/organizations/[organizationId]";
 import { Toaster } from "react-hot-toast";
 import { Logs } from "./routes/dashboard/organizations/[organizationId]/Logs";
+import { TodoPage } from "./routes/dashboard/organizations/[organizationId]/Todos/index";
+import { TodoDetails } from "./routes/dashboard/organizations/[organizationId]/Todos/[todoId]";
 
 export default () => {
   return (
@@ -67,6 +69,14 @@ export default () => {
           <Route
             path="/dashboard/organizations/:organizationId/logs"
             element={<Logs />}
+          />
+          <Route
+            path="/dashboard/organizations/:organizationId/todos"
+            element={<TodoPage />}
+          />
+          <Route
+            path="/dashboard/organizations/:organizationId/todos/:todoId"
+            element={<TodoDetails />}
           />
 
           <Route path="/dashboard/events" element={<Events />} />

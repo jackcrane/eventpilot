@@ -4,16 +4,19 @@ import toast from "react-hot-toast";
 
 export const useTodo = (orgId, todoId, options = {}) => {
   const defaultData = options.defaultData || {};
+  const dontTriggerLoadingOnStageUpdate =
+    options.dontTriggerLoadingOnStageUpdate || false;
   const [loading, setLoading] = useState(true);
+  const [stageLoading, setStageLoading] = useState(false);
   const [todo, setTodo] = useState(defaultData);
   const [error, setError] = useState(null);
 
-  const fetchTodo = async () => {
+  const fetchTodo = async (shouldTriggerLoading = true) => {
     if (!orgId || !todoId) {
       setLoading(false);
       return;
     }
-    setLoading(true);
+    shouldTriggerLoading && setLoading(true);
     try {
       const response = await authFetch(`/orgs/${orgId}/todos/${todoId}`);
       if (!response.ok) {
@@ -36,6 +39,7 @@ export const useTodo = (orgId, todoId, options = {}) => {
     try {
       // Optimistically update the todo stage
       const originalTodo = { ...todo };
+      setStageLoading(true);
       setTodo({ ...todo, stage });
 
       const response = await authFetch(`/orgs/${orgId}/todos/${todoId}`, {
@@ -48,7 +52,8 @@ export const useTodo = (orgId, todoId, options = {}) => {
         setTodo(originalTodo); // Revert to the original state if update fails
         return;
       }
-      await fetchTodo();
+      await fetchTodo(!dontTriggerLoadingOnStageUpdate);
+      setStageLoading(false);
     } catch (error) {
       setError("Failed to update todo");
     }
@@ -58,5 +63,12 @@ export const useTodo = (orgId, todoId, options = {}) => {
     fetchTodo();
   }, [orgId, todoId]);
 
-  return { loading, todo, error, refetch: fetchTodo, updateTodoStage };
+  return {
+    loading,
+    stageLoading,
+    todo,
+    error,
+    refetch: fetchTodo,
+    updateTodoStage,
+  };
 };
