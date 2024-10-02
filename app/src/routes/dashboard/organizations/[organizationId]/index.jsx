@@ -40,6 +40,7 @@ import {
 import { Button } from "tabler-react-2/dist/button";
 import { Todo, Todos } from "../../../../components/todo";
 import { LogsTimeline } from "../../../../components/logs";
+import { MarketingContactsChart } from "../../../../components/marketingContactsChart";
 
 export const sidenavItems = (org, activeText) => {
   return [
@@ -120,6 +121,8 @@ export const OrganizationHome = () => {
   return (
     <Page sidenavItems={sidenavItems(org.id, "Org Home")}>
       <H1 style={{ fontSize: 32 }}>{org.name}</H1>
+      <Util.Hr />
+      <MarketingContactsChart />
       <Util.Hr />
       <H1>Todo List</H1>
       <Typography.I>

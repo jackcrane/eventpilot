@@ -87,6 +87,7 @@ model Organization {
   events      Event[]
   logs        Log[]
   todoItems    TodoItem[]
+  marketingContacts OrganizationMarketingContact[]
 }
 
 model EventInvitation {
@@ -160,6 +161,9 @@ model Log {
 
   todoItemCommentId String?
   todoItemComment   TodoItemComment? @relation(fields: [todoItemCommentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  organizationMarketingContactId String?
+  organizationMarketingContact   OrganizationMarketingContact? @relation(fields: [organizationMarketingContactId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 }
 
 model LogType {
@@ -241,4 +245,22 @@ enum TodoItemStage {
   BLOCKED
   COMPLETE
   WONT_DO
+}
+
+model OrganizationMarketingContact {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  name String
+  email String
+  phone String
+  gender String
+  birthyear Int
+  source String
+
+  logs Log[]
 }
