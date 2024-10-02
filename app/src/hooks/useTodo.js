@@ -10,6 +10,9 @@ export const useTodo = (orgId, todoId, options = {}) => {
   const [stageLoading, setStageLoading] = useState(false);
   const [todo, setTodo] = useState(defaultData);
   const [error, setError] = useState(null);
+  const [commentLoading, setCommentLoading] = useState(false);
+  const [commentError, setCommentError] = useState(null);
+  const [updateLoading, setUpdateLoading] = useState(false);
 
   const fetchTodo = async (shouldTriggerLoading = true) => {
     if (!orgId || !todoId) {
@@ -59,6 +62,69 @@ export const useTodo = (orgId, todoId, options = {}) => {
     }
   };
 
+  const updateTodo = async (data) => {
+    if (!orgId || !todoId) return;
+
+    try {
+      setUpdateLoading(true);
+      // Optimistically update the todo
+      const originalTodo = { ...todo };
+      setTodo({ ...todo, ...data });
+
+      const response = await authFetch(`/orgs/${orgId}/todos/${todoId}`, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        toast.error("Failed to update todo");
+        setTodo(originalTodo); // Revert to the original state if update fails
+        setUpdateLoading(false);
+        return;
+      }
+      await fetchTodo(false);
+      setUpdateLoading(false);
+    } catch (error) {
+      setError("Failed to update todo");
+      setUpdateLoading(false);
+    }
+  };
+
+  const comment = async (comment) => {
+    if (!orgId || !todoId) return;
+    if (!comment) return;
+    if (commentLoading) return;
+    if (comment.length > 1000) {
+      setCommentError(
+        `Comment is too long (${comment.length}/1000 characters)`
+      );
+      return;
+    }
+    if (comment.length < 5) {
+      setCommentError("Comment is too short (minimum 5 characters)");
+      return;
+    }
+
+    try {
+      setCommentLoading(true);
+      const response = await authFetch(`/orgs/${orgId}/todos/${todoId}`, {
+        method: "PUT",
+        body: JSON.stringify({ text: comment }),
+      });
+
+      if (!response.ok) {
+        setCommentError("Failed to comment on todo");
+        return;
+      }
+      setCommentError(null);
+      await fetchTodo(false);
+      setCommentLoading(false);
+      return true;
+    } catch (error) {
+      setError("Failed to comment on todo");
+    }
+  };
+
   useEffect(() => {
     fetchTodo();
   }, [orgId, todoId]);
@@ -68,6 +134,11 @@ export const useTodo = (orgId, todoId, options = {}) => {
     stageLoading,
     todo,
     error,
+    comment,
+    commentLoading,
+    commentError,
+    update: updateTodo,
+    updateLoading,
     refetch: fetchTodo,
     updateTodoStage,
   };

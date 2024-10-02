@@ -5,11 +5,13 @@ import {
   IconCopyPlus,
   IconEdit,
   IconLogs,
+  IconMessagePlus,
   IconPlaylistAdd,
 } from "@tabler/icons-react";
 import { Typography, Util, Input } from "tabler-react-2";
 import { Todo } from "../components/todo";
 import ObjectDiffViewer from "../routes/dashboard/organizations/[organizationId]";
+import { Comment } from "../routes/dashboard/organizations/[organizationId]/Todos/[todoId]";
 const { Text } = Typography;
 
 export const switchLogTypes = (logType) => {
@@ -36,12 +38,18 @@ export const switchLogTypes = (logType) => {
         icon: IconPlaylistAdd,
         color: "gray",
       };
+    case "TODO_COMMENT_CREATED":
+      return {
+        text: "Todo Comment Posted",
+        icon: IconMessagePlus,
+        color: "green",
+      };
     default:
       return { text: "Log", icon: IconLogs, color: "gray" };
   }
 };
 
-export const switchLogTypesForContent = (log) => {
+export const switchLogTypesForContent = (log, renderLogCard = true) => {
   switch (log.type) {
     case "ORG_MODIFIED":
       return (
@@ -54,7 +62,10 @@ export const switchLogTypesForContent = (log) => {
       return (
         <>
           <Text>A new todo item was created.</Text>
-          <Todo todoItem={log.todoItem} />
+          {renderLogCard && (
+            <Util.Hr text="Below reflects the current state of the todo" />
+          )}
+          {renderLogCard && <Todo todoItem={log.todoItem} />}
         </>
       );
     case "TODO_STAGE_MODIFIED":
@@ -62,17 +73,33 @@ export const switchLogTypesForContent = (log) => {
         <>
           <Text>A todo was moved into a different progress stage.</Text>
           <ObjectDiffViewer oldObj={log.data.from} newObj={log.data.to} />
-          <Util.Hr text="Below reflects the current state of the todo" />
-          <Todo todoItem={log.todoItem} />
+          {renderLogCard && (
+            <Util.Hr text="Below reflects the current state of the todo" />
+          )}
+          {renderLogCard && <Todo todoItem={log.todoItem} />}
         </>
       );
     case "TODO_MODIFIED":
       return (
         <>
-          <Text>A todo was moved into a different progress stage.</Text>
+          <Text>A todo was modified.</Text>
           <ObjectDiffViewer oldObj={log.data.from} newObj={log.data.to} />
-          <Typography.I>asdf</Typography.I>
-          <Todo todoItem={log.todoItem} />
+          {renderLogCard && (
+            <Util.Hr text="Below reflects the current state of the todo" />
+          )}
+          {renderLogCard && <Todo todoItem={log.todoItem} />}
+        </>
+      );
+    case "TODO_COMMENT_CREATED":
+      return (
+        <>
+          <Text>A comment was added to a todo.</Text>
+          {renderLogCard && (
+            <Util.Hr text="Below reflects the current state of the todo and comment" />
+          )}
+          {renderLogCard && <Todo todoItem={log.todoItem} />}
+          {renderLogCard && <Util.Spacer size={1} />}
+          <Comment comment={log.todoItemComment} />
         </>
       );
     default:

@@ -27,7 +27,16 @@ export const Logs = () => {
   return (
     <Page sidenavItems={sidenavItems(organizationId, "Logs")}>
       <H2>Logs</H2>
-      {logsLoading ? <Loading /> : <LogsTimeline logs={logs} org={org} />}
+      {logsLoading ? (
+        <Loading />
+      ) : (
+        <LogsTimeline
+          shouldPaginate={true}
+          pageSize={10}
+          logs={logs}
+          org={org}
+        />
+      )}
     </Page>
   );
 };

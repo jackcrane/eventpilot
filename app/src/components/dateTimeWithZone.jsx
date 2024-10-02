@@ -2,12 +2,30 @@ import React, { useState, useEffect } from "react";
 import { Input, Util, DropdownInput } from "tabler-react-2";
 
 const TIMEZONES = [
-  { id: "America/New_York", label: "Eastern Time", offset: -4 },
-  { id: "America/Chicago", label: "Central Time", offset: -5 },
-  { id: "America/Denver", label: "Mountain Time", offset: -6 },
-  { id: "America/Los_Angeles", label: "Pacific Time", offset: -7 },
-  { id: "America/Anchorage", label: "Alaska Time", offset: -8 },
-  { id: "Pacific/Honolulu", label: "Hawaii Time", offset: -10 },
+  { id: "America/New_York", label: "Eastern Time" },
+  { id: "America/Chicago", label: "Central Time" },
+  { id: "America/Denver", label: "Mountain Time" },
+  { id: "America/Los_Angeles", label: "Pacific Time" },
+  { id: "America/Anchorage", label: "Alaska Time" },
+  { id: "Pacific/Honolulu", label: "Hawaii Time" },
+  { id: "Europe/London", label: "Greenwich Mean Time" },
+  { id: "Europe/Paris", label: "Central European Time" },
+  { id: "Europe/Moscow", label: "Moscow Standard Time" },
+  { id: "Asia/Dubai", label: "Gulf Standard Time" },
+  { id: "Asia/Karachi", label: "Pakistan Standard Time" },
+  { id: "Asia/Kolkata", label: "India Standard Time" },
+  { id: "Asia/Bangkok", label: "Indochina Time" },
+  { id: "Asia/Shanghai", label: "China Standard Time" },
+  { id: "Asia/Tokyo", label: "Japan Standard Time" },
+  { id: "Australia/Sydney", label: "Australian Eastern Time" },
+  { id: "Pacific/Auckland", label: "New Zealand Standard Time" },
+  { id: "Africa/Johannesburg", label: "South Africa Standard Time" },
+  { id: "America/Sao_Paulo", label: "Brasilia Time" },
+  { id: "America/Argentina/Buenos_Aires", label: "Argentina Time" },
+  { id: "Atlantic/Azores", label: "Azores Time" },
+  { id: "Africa/Cairo", label: "Eastern European Time" },
+  { id: "Pacific/Tahiti", label: "Tahiti Time" },
+  { id: "Asia/Seoul", label: "Korea Standard Time" },
 ];
 
 export const DatePicker = ({
@@ -18,13 +36,16 @@ export const DatePicker = ({
   value, // should be a Date object
   ...props
 }) => {
-  const [timezone, setTimezone] = useState(timezoneValue || TIMEZONES[0]);
+  const [timezone, setTimezone] = useState(timezoneValue || null);
   const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
-    // Sync input field when value (Date object) changes
-    if (value instanceof Date) {
-      const localDateString = toLocalDateString(value, timezone.offset);
+    setTimezone(timezoneValue);
+  }, [timezoneValue]);
+
+  useEffect(() => {
+    if (value instanceof Date && timezone) {
+      const localDateString = toLocalDateString(value, timezone.id);
       setInputValue(localDateString);
     }
   }, [value, timezone]);
@@ -35,30 +56,43 @@ export const DatePicker = ({
   };
 
   const handleDateChange = (event) => {
-    console.log(event);
     const inputTime = event;
     const parsedDate = parseDateFromInput(inputTime);
-    const correctedDate = adjustForTimezone(parsedDate, timezone.offset);
+    const correctedDate = adjustForTimezone(parsedDate, timezone.id);
     setInputValue(inputTime); // update input field
     onChange && onChange(correctedDate); // fire with corrected Date object
   };
 
-  const adjustForTimezone = (date, timezoneOffset) => {
-    // Convert date to UTC and then apply timezone offset
-    const utcDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-    const correctedDate = new Date(
-      utcDate.getTime() + timezoneOffset * 3600000
+  const adjustForTimezone = (date, timeZone) => {
+    const utcDate = new Date(date.toLocaleString("en-US", { timeZone: "UTC" }));
+    const timeZoneDate = new Date(
+      utcDate.toLocaleString("en-US", { timeZone })
     );
-    return correctedDate;
+    return timeZoneDate;
   };
 
-  const toLocalDateString = (date, timezoneOffset) => {
-    const utcDate = new Date(date.getTime() + timezoneOffset * 3600000);
-    return utcDate.toISOString().slice(0, 16); // Format as "YYYY-MM-DDTHH:mm"
+  const toLocalDateString = (date, timeZone) => {
+    const formatter = new Intl.DateTimeFormat("sv-SE", {
+      timeZone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+
+    const parts = formatter.formatToParts(date);
+    const dateString = `${parts.find((p) => p.type === "year").value}-${
+      parts.find((p) => p.type === "month").value
+    }-${parts.find((p) => p.type === "day").value}T${
+      parts.find((p) => p.type === "hour").value
+    }:${parts.find((p) => p.type === "minute").value}`;
+
+    return dateString;
   };
 
   const parseDateFromInput = (input) => {
-    // Parse "YYYY-MM-DDTHH:mm" format into a Date object
     return new Date(`${input}:00.000Z`);
   };
 

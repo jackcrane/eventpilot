@@ -23,8 +23,39 @@ export const get = [
         createdAt: "desc",
       },
       include: {
-        user: true,
-        todoItem: true,
+        user: {
+          select: {
+            name: true,
+            id: true,
+          },
+        },
+        todoItem: {
+          include: {
+            comments: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
+              },
+              orderBy: {
+                createdAt: "desc",
+              },
+            },
+          },
+        },
+        todoItemComment: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
       },
       take: parseInt(limit),
       skip: parseInt(offset),
