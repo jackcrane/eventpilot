@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { authFetch } from "../util/url";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export const useTodos = (orgId, { limit = 1000, offset = 0 }) => {
   const [loading, setLoading] = useState(true);
+  const [createLoading, setCreateLoading] = useState(false);
   const [todos, setTodos] = useState([]);
   const [error, setError] = useState(null);
   const [meta, setMeta] = useState({ count: 0 });
+  const navigate = useNavigate();
 
   const fetchTodos = async () => {
     if (!orgId) {
@@ -61,9 +64,38 @@ export const useTodos = (orgId, { limit = 1000, offset = 0 }) => {
     }
   };
 
+  const createTodo = async () => {
+    try {
+      setCreateLoading(true);
+      const response = await authFetch(`/orgs/${orgId}/todos`, {
+        method: "POST",
+      });
+      if (!response.ok) {
+        toast.error("Failed to create todo");
+        setCreateLoading(false);
+        return;
+      }
+      const data = await response.json();
+      setCreateLoading(false);
+      navigate(`/dashboard/organizations/${orgId}/todos/${data.id}`);
+    } catch (error) {
+      setError("Failed to create todo");
+      setCreateLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchTodos();
   }, [orgId]);
 
-  return { loading, todos, error, meta, refetch: fetchTodos, updateTodoStage };
+  return {
+    loading,
+    todos,
+    error,
+    meta,
+    createTodo,
+    createLoading,
+    refetch: fetchTodos,
+    updateTodoStage,
+  };
 };

@@ -16,6 +16,7 @@ export const get = [
             },
           },
         },
+        deleted: false,
       },
       orderBy: {
         dueDate: "asc",
@@ -43,5 +44,30 @@ export const get = [
         count,
       },
     });
+  },
+];
+
+export const post = [
+  requireAuth,
+  async (req, res) => {
+    const todo = await prisma.todoItem.create({
+      data: {
+        organizationId: req.params.orgId,
+        userId: req.user.id,
+        stage: "OPEN",
+        ...req.body,
+      },
+    });
+
+    await prisma.log.create({
+      data: {
+        type: "TODO_CREATED",
+        organizationId: req.params.orgId,
+        userId: req.user.id,
+        todoItemId: todo.id,
+      },
+    });
+
+    res.json(todo);
   },
 ];

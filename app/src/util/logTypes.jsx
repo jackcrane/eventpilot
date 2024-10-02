@@ -3,7 +3,9 @@ import {
   IconCopy,
   IconCopyMinus,
   IconCopyPlus,
+  IconCopyX,
   IconEdit,
+  IconLockAccessOff,
   IconLogs,
   IconMessagePlus,
   IconPlaylistAdd,
@@ -43,6 +45,14 @@ export const switchLogTypes = (logType) => {
         text: "Todo Comment Posted",
         icon: IconMessagePlus,
         color: "green",
+      };
+    case "TODO_DELETED":
+      return { text: "Todo Deleted", icon: IconCopyX, color: "red" };
+    case "TODO_MODIFIED_BLOCKED":
+      return {
+        text: "Todo Modified Blocked",
+        icon: IconLockAccessOff,
+        color: "red",
       };
     default:
       return { text: "Log", icon: IconLogs, color: "gray" };
@@ -100,6 +110,30 @@ export const switchLogTypesForContent = (log, renderLogCard = true) => {
           {renderLogCard && <Todo todoItem={log.todoItem} />}
           {renderLogCard && <Util.Spacer size={1} />}
           <Comment comment={log.todoItemComment} />
+        </>
+      );
+    case "TODO_DELETED":
+      return (
+        <>
+          <Text>A todo was deleted.</Text>
+          {renderLogCard && (
+            <Util.Hr text="Below reflects the current state of the todo" />
+          )}
+          {renderLogCard && <Todo todoItem={log.todoItem} />}
+        </>
+      );
+    case "TODO_MODIFIED_BLOCKED":
+      return (
+        <>
+          <Text>
+            A user attempted to modify a deleted todo and was blocked from doing
+            so.
+          </Text>
+          <ObjectDiffViewer oldObj={log.data.from} newObj={log.data.to} />
+          {renderLogCard && (
+            <Util.Hr text="Below reflects the current state of the todo" />
+          )}
+          {renderLogCard && <Todo todoItem={log.todoItem} />}
         </>
       );
     default:

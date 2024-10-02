@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { authFetch } from "../util/url";
 import toast from "react-hot-toast";
 
+// Create a cache for storing fetched todos
+const todoCache = new Map();
+
 export const useTodo = (orgId, todoId, options = {}) => {
   const defaultData = options.defaultData || {};
   const dontTriggerLoadingOnStageUpdate =
@@ -19,6 +22,15 @@ export const useTodo = (orgId, todoId, options = {}) => {
       setLoading(false);
       return;
     }
+
+    // Check if the todo is already in cache
+    const cacheKey = `${orgId}-${todoId}`;
+    if (todoCache.has(cacheKey)) {
+      setTodo(todoCache.get(cacheKey));
+      setLoading(false);
+      return;
+    }
+
     shouldTriggerLoading && setLoading(true);
     try {
       const response = await authFetch(`/orgs/${orgId}/todos/${todoId}`);
@@ -28,6 +40,10 @@ export const useTodo = (orgId, todoId, options = {}) => {
         return;
       }
       const { data } = await response.json();
+
+      // Store the data in cache
+      todoCache.set(cacheKey, data);
+
       setTodo(data);
       setLoading(false);
     } catch (error) {
@@ -40,7 +56,6 @@ export const useTodo = (orgId, todoId, options = {}) => {
     if (!orgId || !todoId) return;
 
     try {
-      // Optimistically update the todo stage
       const originalTodo = { ...todo };
       setStageLoading(true);
       setTodo({ ...todo, stage });
@@ -52,9 +67,12 @@ export const useTodo = (orgId, todoId, options = {}) => {
 
       if (!response.ok) {
         toast.error("Failed to update todo");
-        setTodo(originalTodo); // Revert to the original state if update fails
+        setTodo(originalTodo);
         return;
       }
+
+      // Invalidate cache for this todo and refetch
+      todoCache.delete(`${orgId}-${todoId}`);
       await fetchTodo(!dontTriggerLoadingOnStageUpdate);
       setStageLoading(false);
     } catch (error) {
@@ -67,7 +85,6 @@ export const useTodo = (orgId, todoId, options = {}) => {
 
     try {
       setUpdateLoading(true);
-      // Optimistically update the todo
       const originalTodo = { ...todo };
       setTodo({ ...todo, ...data });
 
@@ -78,10 +95,13 @@ export const useTodo = (orgId, todoId, options = {}) => {
 
       if (!response.ok) {
         toast.error("Failed to update todo");
-        setTodo(originalTodo); // Revert to the original state if update fails
+        setTodo(originalTodo);
         setUpdateLoading(false);
         return;
       }
+
+      // Invalidate cache for this todo and refetch
+      todoCache.delete(`${orgId}-${todoId}`);
       await fetchTodo(false);
       setUpdateLoading(false);
     } catch (error) {
@@ -117,11 +137,35 @@ export const useTodo = (orgId, todoId, options = {}) => {
         return;
       }
       setCommentError(null);
+
+      // Invalidate cache and refetch after commenting
+      todoCache.delete(`${orgId}-${todoId}`);
       await fetchTodo(false);
       setCommentLoading(false);
       return true;
     } catch (error) {
       setError("Failed to comment on todo");
+    }
+  };
+
+  const del = async () => {
+    if (!orgId || !todoId) return;
+
+    try {
+      const response = await authFetch(`/orgs/${orgId}/todos/${todoId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        toast.error("Failed to delete todo");
+        return;
+      }
+
+      // Invalidate cache and refetch after deleting
+      todoCache.delete(`${orgId}-${todoId}`);
+      await fetchTodo(false);
+    } catch (error) {
+      setError("Failed to delete todo");
     }
   };
 
@@ -139,6 +183,7 @@ export const useTodo = (orgId, todoId, options = {}) => {
     commentError,
     update: updateTodo,
     updateLoading,
+    del,
     refetch: fetchTodo,
     updateTodoStage,
   };

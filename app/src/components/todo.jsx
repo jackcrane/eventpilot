@@ -124,7 +124,10 @@ export const Todo = ({
   return (
     <Card
       variant={switchStageForColor(todo.stage).color}
-      style={{ marginBottom: isInKanban ? 4 : 0 }}
+      style={{
+        marginBottom: isInKanban ? 4 : 0,
+        backgroundColor: todo.deleted ? "#f8d7da" : "",
+      }}
     >
       {showsRibbon && (
         <Ribbon
@@ -139,7 +142,7 @@ export const Todo = ({
       )}
       <Util.Row align="between">
         <Typography.H3>{todo.title}</Typography.H3>
-        {showsDropdown && (
+        {showsDropdown && !todo.deleted && (
           <DropdownInput
             prompt=""
             values={[

@@ -11,3 +11,4 @@ This is a list of todos and the issues I currently have with the code I have wri
 - [ ] Fix toasts not working???
 - [ ] Fix "todo modified" and "todo stage modified" log duplication
 - [ ] Figure out why fetchTodo is being called like 8 billion times
+- [ ] Pull out the fetchTodo calls into a higher state to prevent re-fetching

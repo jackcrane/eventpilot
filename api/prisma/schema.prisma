@@ -188,11 +188,11 @@ model TodoItem {
   dueDate DateTime?
   dueDateTimezone String?
 
-  todoType TodoItemType @relation(fields: [type], references: [name])
-  type String
+  todoType TodoItemType? @relation(fields: [type], references: [name])
+  type String?
 
-  title String
-  text String  @db.Text
+  title String?
+  text String?  @db.Text
   slug String?
   href  String?
 
@@ -209,6 +209,8 @@ model TodoItem {
 
   logs Log[]
   comments TodoItemComment[]
+
+  deleted Boolean @default(false)
 }
 
 model TodoItemComment {

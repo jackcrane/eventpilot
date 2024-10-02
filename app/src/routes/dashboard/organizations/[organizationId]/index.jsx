@@ -13,20 +13,28 @@ import {
   IconArrowRightRhombus,
   IconBracketsContain,
   IconBuilding,
+  IconCalendarClock,
   IconCategory,
   IconCategory2,
   IconCopy,
   IconDelta,
   IconEye,
   IconForms,
+  IconHeading,
   IconKey,
+  IconLetterCase,
+  IconLink,
   IconMail,
   IconMap2,
   IconMapPin,
   IconMapPins,
+  IconOutlet,
   IconPlaylistAdd,
+  IconPlus,
   IconRotateDot,
+  IconTimezone,
   IconTrademark,
+  IconTrash,
   IconZip,
 } from "@tabler/icons-react";
 import { Button } from "tabler-react-2/dist/button";
@@ -209,7 +217,6 @@ const ObjectDiffViewer = ({ oldObj, newObj, original }) => {
               <h4 style={{ marginBottom: 0 }}>
                 {convertCamelToSentenceCase(fullKey)}
               </h4>
-
               <div className={style.diffViewerReset}>
                 <Util.Row wrap gap={1}>
                   <Badge
@@ -283,6 +290,22 @@ const switchAttrForIcon = (attr) => {
       return <IconEye size={18} />;
     case "stage":
       return <IconCopy size={18} />;
+    case "href":
+      return <IconLink size={18} />;
+    case "slug":
+      return <IconOutlet size={18} />;
+    case "text":
+      return <IconLetterCase size={18} />;
+    case "title":
+      return <IconHeading size={18} />;
+    case "deleted":
+      return <IconTrash size={18} />;
+    case "dueDate":
+      return <IconCalendarClock size={18} />;
+    case "createdAt":
+      return <IconPlus size={18} />;
+    case "dueDateTimezone":
+      return <IconTimezone size={18} />;
     default:
       return <IconDelta size={18} data-unhandledAttr={attr} />;
   }

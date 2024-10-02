@@ -9,6 +9,7 @@ import {
   Input,
   Form,
   Card,
+  useConfirm,
 } from "tabler-react-2";
 const { H2, Text, H3 } = Typography;
 import { Todo } from "../../../../../components/todo";
@@ -16,7 +17,7 @@ import { useTodo } from "../../../../../hooks/useTodo";
 import { Loading } from "../../../../../components/loading";
 import { Spinner } from "tabler-react-2/dist/spinner";
 import { DatePicker } from "../../../../../components/dateTimeWithZone";
-import { IconMessagesOff } from "@tabler/icons-react";
+import { IconMessagesOff, IconTrash } from "@tabler/icons-react";
 import { Alert } from "tabler-react-2/dist/alert";
 import { Button } from "tabler-react-2/dist/button";
 import { LogsTimeline } from "../../../../../components/logs";
@@ -38,6 +39,7 @@ export const TodoDetails = () => {
     commentError,
     update,
     updateLoading,
+    del,
   } = useTodo(organizationId, todoId, {
     dontTriggerLoadingOnStageUpdate: true,
   });
@@ -59,6 +61,20 @@ export const TodoDetails = () => {
     }
   }, [todo]);
 
+  const { confirm, ConfirmModal } = useConfirm({
+    title: "Are you sure?",
+    text: "You cannot undelete, modify, or continue to work with deleted todos. They will not be visible in the kanban board, but records and logs are retained.",
+    commitText: "Yes",
+    cancelText: "No",
+  });
+
+  const handleDelete = async () => {
+    const res = await confirm();
+    if (res) {
+      del();
+    }
+  };
+
   if (loading) {
     return <Loading />;
   }
@@ -76,9 +92,28 @@ export const TodoDetails = () => {
   return (
     <Page sidenavItems={sidenavItems(organizationId, "Todo List")}>
       <Toaster />
-      <H2>Todo Details</H2>
+      {ConfirmModal}
+      <Util.Row style={{ justifyContent: "space-between" }}>
+        <H2 style={{ margin: 0 }}>Todo Details</H2>
+        {!todo.deleted && (
+          <Button outline variant="danger" onClick={handleDelete}>
+            <Util.Row>
+              <IconTrash size={18} />
+              Delete Todo
+            </Util.Row>
+          </Button>
+        )}
+      </Util.Row>
+      <Util.Spacer size={1} />
       <Todo todoItem={todo} showsDropdown={false} />
       <Util.Hr />
+      {todo.deleted && (
+        <Alert variant="danger" title="This todo has been deleted.">
+          This todo has been deleted. You can no longer edit or continue to work
+          on it. It will not be visible in the kanban board, but records, logs,
+          and comments are retained.
+        </Alert>
+      )}
       <Util.Row style={{ alignItems: "flex-start" }} gap={1}>
         <Util.Col style={{ width: "50%" }} gap={1}>
           <div>
@@ -86,6 +121,7 @@ export const TodoDetails = () => {
             <Text>Stage</Text>
             <Util.Row gap={1}>
               <DropdownInput
+                disabled={todo.deleted}
                 prompt="Select"
                 values={[
                   {
@@ -123,11 +159,17 @@ export const TodoDetails = () => {
               {stageLoading && <Spinner color="secondary" size="sm" />}
             </Util.Row>
           </div>
-          <Input label="Title" value={title} onChange={(e) => setTitle(e)} />
+          <Input
+            label="Title"
+            value={title}
+            onChange={(e) => setTitle(e)}
+            disabled={todo.deleted}
+          />
           <Form.Autosize
             title="Text"
             value={text}
             onChange={(e) => setText(e)}
+            disabled={todo.deleted}
           />
           <Input
             label={
@@ -139,6 +181,7 @@ export const TodoDetails = () => {
             placeholder="You can add a link here."
             value={href}
             onChange={(e) => setHref(e)}
+            disabled={todo.deleted}
           />
           <DatePicker
             label="Due Date"
@@ -146,15 +189,20 @@ export const TodoDetails = () => {
             onChange={setDueDate}
             timezoneValue={{ id: dueDateTz }}
             onTimezoneChange={(e) => setDueDateTz(e.id)}
+            disabled={todo.deleted}
           />
           <Util.Spacer size={1} />
-          <Button onClick={handleSubmit} loading={updateLoading}>
+          <Button
+            onClick={handleSubmit}
+            loading={updateLoading}
+            disabled={todo.deleted}
+          >
             Save Changes
           </Button>
         </Util.Col>
         <Util.Col style={{ width: "50%" }}>
           <H2>Comments</H2>
-          {todo.comments.length === 0 && (
+          {todo.comments?.length === 0 && (
             <>
               <Alert
                 icon={<IconMessagesOff />}
@@ -178,12 +226,13 @@ export const TodoDetails = () => {
               comment(commentText).then((g) => g && setCommentText(""))
             }
             loading={commentLoading}
+            disabled={todo.deleted}
           >
             Add comment
           </Button>
           <Util.Hr />
           <div style={{ maxHeight: "90vh", overflowY: "auto" }}>
-            {todo.comments.map((comment) => (
+            {todo.comments?.map((comment) => (
               <Comment comment={comment} />
             ))}
           </div>

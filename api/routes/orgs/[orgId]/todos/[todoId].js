@@ -86,6 +86,25 @@ export const patch = [
       return res.status(404).send("Not found");
     }
 
+    if (todo.deleted) {
+      await prisma.log.create({
+        data: {
+          type: "TODO_MODIFIED_BLOCKED",
+          organizationId: req.params.orgId,
+          userId: req.user.id,
+          todoItemId: req.params.todoId,
+          data: {
+            from: todo,
+            to: req.body,
+          },
+        },
+      });
+
+      return res
+        .status(401)
+        .send("This todo has been deleted and cannot be modified");
+    }
+
     const updatedTodo = await prisma.todoItem.update({
       where: {
         id: req.params.todoId,
@@ -114,11 +133,12 @@ export const patch = [
       const changes = Object.keys(req.body).filter((key) => {
         if (key !== "stage") {
           if (key === "dueDate") {
-            return req.body[key].toString() !== todo[key].toISOString();
+            return req.body[key]?.toString() !== todo[key]?.toISOString();
           }
           return req.body[key] !== todo[key];
         }
       });
+      console.log(changes);
       if (changes.length && changes.length > 0) {
         await prisma.log.create({
           data: {
@@ -156,6 +176,25 @@ export const put = [
 
     if (!todo) {
       return res.status(404).send("Not found");
+    }
+
+    if (todo.deleted) {
+      await prisma.log.create({
+        data: {
+          type: "TODO_MODIFIED_BLOCKED",
+          organizationId: req.params.orgId,
+          userId: req.user.id,
+          todoItemId: req.params.todoId,
+          data: {
+            from: todo,
+            to: req.body,
+          },
+        },
+      });
+
+      return res
+        .status(401)
+        .send("This todo has been deleted and cannot be modified");
     }
 
     // Add the comment to the todo item
@@ -231,5 +270,48 @@ export const put = [
     });
 
     res.json({ data: updatedTodo });
+  },
+];
+
+export const del = [
+  requireAuth,
+  async (req, res) => {
+    const todo = await prisma.todoItem.findUnique({
+      where: {
+        id: req.params.todoId,
+        organizationId: req.params.orgId,
+        organization: {
+          users: {
+            some: {
+              userId: req.user.id,
+            },
+          },
+        },
+      },
+    });
+
+    if (!todo) {
+      return res.status(404).send("Not found");
+    }
+
+    await prisma.todoItem.update({
+      where: {
+        id: req.params.todoId,
+      },
+      data: {
+        deleted: true,
+      },
+    });
+
+    await prisma.log.create({
+      data: {
+        type: "TODO_DELETED",
+        organizationId: req.params.orgId,
+        userId: req.user.id,
+        todoItemId: req.params.todoId,
+      },
+    });
+
+    res.status(204).send("Deleted");
   },
 ];
