@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import styles from "./Marquee.module.css";
+import styles from "./marquee.module.css";
 
 export const EPMarquee = ({
   direction = "up",

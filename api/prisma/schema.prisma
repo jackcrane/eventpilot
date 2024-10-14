@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://apps:Guro6297@db.jackcrane.rocks:3306/eventpilot"
+  url      = env("DATABASE_URL")
 }
 
 model User {

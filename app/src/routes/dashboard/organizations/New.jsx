@@ -16,7 +16,7 @@ import { Alert } from "tabler-react-2/dist/alert";
 import { validateEmail } from "../../../util/validateEmail.js";
 import { useOrg } from "../../../hooks/useOrg.js";
 import { NewOrganizationSkeleton } from "../../../components/newOrganizationSkeleton.jsx";
-import { switchForHighlight } from "./New.Content.jsx";
+import { switchForHighlight } from "./New.content.jsx";
 import { sidenavItems } from "./[organizationId]/index.jsx";
 import { Page } from "../../../components/page.jsx";
 import { Loading } from "../../../components/loading.jsx";
