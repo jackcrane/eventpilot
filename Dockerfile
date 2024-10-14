@@ -4,9 +4,6 @@ FROM node:18-alpine AS base
 # Accept build-time arguments
 ARG DATABASE_URL
 
-# Log all environment variables during build time
-RUN echo "DATABASE_URL: ${DATABASE_URL}"
-
 # Set the working directory to /app for the frontend
 WORKDIR /app
 

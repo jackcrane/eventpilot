@@ -188,6 +188,15 @@ export default () => {
               </Layout>
             }
           />
+
+          <Route
+            path="/debug"
+            element={
+              <>
+                <p>{process.env.NODE_ENV}</p>
+              </>
+            }
+          />
         </Routes>
       </Router>
     </UserProvider>
