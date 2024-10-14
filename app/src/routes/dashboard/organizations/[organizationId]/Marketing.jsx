@@ -369,5 +369,9 @@ const ConsumedUploadBox = ({
 };
 
 const UploadBox = generateUploadButton({
-  url: "http://localhost:2000/fs/upload",
+  url: `${
+    process.env.NODE_ENV === "production"
+      ? "https://geteventpilot.com/fs/upload"
+      : "http://localhost:2000"
+  }/fs/upload`,
 });

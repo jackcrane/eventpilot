@@ -46,10 +46,10 @@ export const generateOTP = async (userId) => {
   }
 
   const { data, error } = await resend.emails.send({
-    from: "Paddlefest <eventpilot@email.geteventpilot.com>",
+    from: "EventPilot <eventpilot@email.geteventpilot.com>",
     to: user.email,
-    subject: "Your OTP for Paddlefest",
-    text: `Your OTP for Paddlefest is ${otp}. You can also use this link to log in ${url}`,
+    subject: "Your OTP for EventPilot",
+    text: `Your OTP for EventPilot is ${otp}. You can also use this link to log in ${url}`,
   });
 
   if (error) {
