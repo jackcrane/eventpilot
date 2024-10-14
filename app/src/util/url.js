@@ -1,6 +1,8 @@
 export const u = (path) => {
   const res =
-    process.env.NODE_ENV === "production" ? "" : "http://localhost:2000" + path;
+    process.env.NODE_ENV === "production"
+      ? "" + path
+      : "http://localhost:2000" + path;
   console.log("Routing to", path, res);
   return res;
 };
