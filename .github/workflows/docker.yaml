@@ -25,4 +25,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: jackcranee/crane-consumables:0.0.1
+          tags: jackcranee/eventpilot:0.0.1
+          build-args: |
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
