@@ -82,7 +82,9 @@ const useAuth = () => {
         },
         body: JSON.stringify({ email, otp: parseInt(otp) }),
       });
+      console.log(response);
       const data = await response.json();
+      console.log(data);
       if (response.ok) {
         setUser(data.user); // Set the logged-in user
         setIsLoggedIn(true);
