@@ -1,6 +1,6 @@
-import { log } from "../../util/log.js";
 import { prisma } from "../../util/prisma.js";
 import { requireAuth } from "../../util/requireAuth.js";
+import { spawnNewTodos } from "../../util/spawnNewOrgTodos.js";
 import { validateEmail } from "../../util/validateEmail.js";
 import { include } from "./[orgId]/index.js";
 
@@ -45,7 +45,6 @@ export const post = [
       if (!website || website.length < 1) {
         return res.status(400).json({ message: "Website is required." });
       }
-      console.log(publicContactEmail);
       if (!publicContactEmail || !validateEmail(publicContactEmail)) {
         return res
           .status(400)
@@ -83,10 +82,16 @@ export const post = [
 
       res.json(org);
 
-      log({
-        type: "ORG_CREATED",
-        userId,
+      await prisma.log.create({
+        data: {
+          type: "ORG_CREATED",
+          userId,
+          organizationId: org.id,
+        },
       });
+
+      // Generate the todos
+      await spawnNewTodos(org.id);
     } catch (err) {
       console.error(err);
       res.status(400).json({ message: "Something went wrong." });

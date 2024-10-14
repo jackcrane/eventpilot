@@ -17,7 +17,7 @@ export const TodoPage = () => {
   const { createTodo, createLoading } = useTodos(organizationId, { limit: 1 });
 
   if (loading && !org?.id) {
-    return <Loading />;
+    return <Page sidenavItems={sidenavItems(organizationId, "Todo List")}><Loading /></Page>;
   }
 
   return (

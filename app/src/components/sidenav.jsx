@@ -5,6 +5,13 @@ import { Button } from "tabler-react-2/dist/button";
 import { Util } from "tabler-react-2";
 
 export const Sidenav = ({ items }) => {
+  const IconComponent = ({ icon }) => {
+    if (icon) {
+      return icon;
+    }
+    return null;
+  };
+
   return (
     <nav className={styles.sidenav}>
       {items.map((item, index) =>
@@ -16,9 +23,12 @@ export const Sidenav = ({ items }) => {
             variant={item.active && "primary"}
             outline={item.active}
           >
-            {item.text}
+            <Util.Row gap={1}>
+              {item.icon && item.icon}
+              {item.text}
+            </Util.Row>
           </Button>
-        ),
+        )
       )}
     </nav>
   );

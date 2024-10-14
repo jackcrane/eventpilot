@@ -1,9 +1,7 @@
 import bcrypt from "bcrypt";
 import "dotenv/config";
 import { prisma } from "../../util/prisma.js";
-import { Resend } from "resend";
 import { generateOTP } from "../../util/otp.js";
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const post = async (req, res) => {
   const { name, email, password } = req.body;

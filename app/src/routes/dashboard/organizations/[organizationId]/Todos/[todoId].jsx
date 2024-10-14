@@ -24,6 +24,7 @@ import { LogsTimeline } from "../../../../../components/logs";
 import { Avatar } from "tabler-react-2/dist/avatar";
 import moment from "moment";
 import toast, { Toaster } from "react-hot-toast";
+import logo from "../../../../../assets/logo-sharp.png";
 
 window.toast = toast;
 
@@ -258,11 +259,15 @@ export const Comment = ({ comment }) => {
       title={
         <Util.Row align="between" style={{ width: "100%" }}>
           <Util.Row gap={1}>
-            <Avatar
-              dicebear
-              size="sm"
-              initials={comment?.user?.id || "EventPilot"}
-            />
+            {comment?.user?.id ? (
+              <Avatar
+                dicebear
+                size="sm"
+                initials={comment?.user?.id || "EventPilot"}
+              />
+            ) : (
+              <Avatar src={logo} size="sm" initials="EP" />
+            )}
             <b>{comment?.user?.name || "EventPilot"}</b>
           </Util.Row>
           <span className="text-secondary">

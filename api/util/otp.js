@@ -46,7 +46,7 @@ export const generateOTP = async (userId) => {
   }
 
   const { data, error } = await resend.emails.send({
-    from: "Paddlefest <eventpilot@emails.jackcrane.rocks>",
+    from: "Paddlefest <eventpilot@email.geteventpilot.com>",
     to: user.email,
     subject: "Your OTP for Paddlefest",
     text: `Your OTP for Paddlefest is ${otp}. You can also use this link to log in ${url}`,

@@ -17,11 +17,15 @@ export const Logs = () => {
     loading: logsLoading,
     meta,
   } = useLogs(organizationId, {
-    limit: 50,
+    limit: 5000,
   });
 
   if (loading && !org?.id) {
-    return <Loading />;
+    return (
+      <Page sidenavItems={sidenavItems(organizationId, "Logs")}>
+        <Loading />
+      </Page>
+    );
   }
 
   return (

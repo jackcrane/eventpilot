@@ -1,0 +1,14 @@
+.marqueeContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Take full height of parent */
+  overflow: hidden;
+  position: relative;
+}
+
+.marqueeContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+}

@@ -26,7 +26,10 @@ const useAuth = () => {
         setUser(null);
         setIsLoggedIn(false);
         localStorage.removeItem("token");
-        if (!document.location.pathname.includes("/auth")) {
+        if (
+          !document.location.pathname.includes("/auth") &&
+          !(document.location.pathname === "/")
+        ) {
           document.location.href = "/auth/login";
         }
       }

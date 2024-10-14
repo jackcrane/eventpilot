@@ -1,10 +1,6 @@
-import React, { createContext, useState } from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  useLocation,
-} from "react-router-dom";
+import React from "react";
+import { createContext, useState } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Home } from "./routes/Home";
 import { Login } from "./routes/auth/Login";
 import { Signup } from "./routes/auth/Signup";
@@ -28,61 +24,172 @@ import { Toaster } from "react-hot-toast";
 import { Logs } from "./routes/dashboard/organizations/[organizationId]/Logs";
 import { TodoPage } from "./routes/dashboard/organizations/[organizationId]/Todos/index";
 import { TodoDetails } from "./routes/dashboard/organizations/[organizationId]/Todos/[todoId]";
+import { Events as OrgEvents } from "./routes/dashboard/organizations/[organizationId]/events/index";
+import { Billing } from "./routes/dashboard/organizations/[organizationId]/Billing";
+
+const Layout = ({ children, showHeaderFooter = true }) => (
+  <>
+    {showHeaderFooter && <Header />}
+    <Toaster />
+    <div>{children}</div>
+    {showHeaderFooter && <Footer />}
+  </>
+);
 
 export default () => {
   return (
     <UserProvider>
-      <Header />
-      <Toaster />
       <Router>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
+          <Route
+            path="/"
+            element={
+              <Layout showHeaderFooter={false}>
+                <Home />
+              </Layout>
+            }
+          />
+          <Route
+            path="/about"
+            element={
+              <Layout showHeaderFooter={true}>
+                <About />
+              </Layout>
+            }
+          />
 
-          <Route path="/auth/login" element={<Login />} />
-          <Route path="/auth/signup" element={<Signup />} />
-          <Route path="/auth/otp" element={<Otp />} />
+          <Route
+            path="/auth/login"
+            element={
+              <Layout showHeaderFooter={false}>
+                <Login />
+              </Layout>
+            }
+          />
+          <Route
+            path="/auth/signup"
+            element={
+              <Layout showHeaderFooter={false}>
+                <Signup />
+              </Layout>
+            }
+          />
+          <Route
+            path="/auth/otp"
+            element={
+              <Layout showHeaderFooter={false}>
+                <Otp />
+              </Layout>
+            }
+          />
 
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/dashboard/organizations" element={<Organizations />} />
+          <Route
+            path="/dashboard"
+            element={
+              <Layout showHeaderFooter={true}>
+                <Dashboard />
+              </Layout>
+            }
+          />
+          <Route
+            path="/dashboard/organizations"
+            element={
+              <Layout showHeaderFooter={true}>
+                <Organizations />
+              </Layout>
+            }
+          />
           <Route
             path="/dashboard/organizations/new"
-            element={<NewOrganization />}
+            element={
+              <Layout showHeaderFooter={true}>
+                <NewOrganization />
+              </Layout>
+            }
           />
           <Route
             path="/dashboard/organizations/:organizationId"
-            element={<OrganizationHome />}
+            element={
+              <Layout showHeaderFooter={true}>
+                <OrganizationHome />
+              </Layout>
+            }
           />
           <Route
             path="/dashboard/organizations/:organizationId/basics"
-            element={<OrganizationBasics />}
+            element={
+              <Layout showHeaderFooter={true}>
+                <OrganizationBasics />
+              </Layout>
+            }
           />
           <Route
             path="/dashboard/organizations/:organizationId/legal"
-            element={<OrganizationLegal />}
+            element={
+              <Layout showHeaderFooter={true}>
+                <OrganizationLegal />
+              </Layout>
+            }
           />
           <Route
             path="/dashboard/organizations/:organizationId/marketing"
-            element={<OrganizationMarketing />}
+            element={
+              <Layout showHeaderFooter={true}>
+                <OrganizationMarketing />
+              </Layout>
+            }
           />
-
           <Route
             path="/dashboard/organizations/:organizationId/logs"
-            element={<Logs />}
+            element={
+              <Layout showHeaderFooter={true}>
+                <Logs />
+              </Layout>
+            }
           />
           <Route
             path="/dashboard/organizations/:organizationId/todos"
-            element={<TodoPage />}
+            element={
+              <Layout showHeaderFooter={true}>
+                <TodoPage />
+              </Layout>
+            }
           />
           <Route
             path="/dashboard/organizations/:organizationId/todos/:todoId"
-            element={<TodoDetails />}
+            element={
+              <Layout showHeaderFooter={true}>
+                <TodoDetails />
+              </Layout>
+            }
+          />
+          <Route
+            path="/dashboard/organizations/:organizationId/billing"
+            element={
+              <Layout showHeaderFooter={true}>
+                <Billing />
+              </Layout>
+            }
+          />
+          <Route
+            path="/dashboard/organizations/:organizationId/events"
+            element={
+              <Layout showHeaderFooter={true}>
+                <OrgEvents />
+              </Layout>
+            }
           />
 
-          <Route path="/dashboard/events" element={<Events />} />
+          <Route
+            path="/dashboard/events"
+            element={
+              <Layout showHeaderFooter={true}>
+                <Events />
+              </Layout>
+            }
+          />
         </Routes>
       </Router>
-      <Footer />
     </UserProvider>
   );
 };

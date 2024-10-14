@@ -1,6 +1,8 @@
 import { log } from "../../../util/log.js";
 import { prisma } from "../../../util/prisma.js";
 import { requireAuth } from "../../../util/requireAuth.js";
+import { completeAutoTodo } from "../../../util/spawnNewOrgTodos.js";
+import { stripe } from "../../../util/stripe.js";
 
 export const include = {
   marketingPrimaryBannerImage: {
@@ -138,9 +140,78 @@ export const put = [
           },
         },
       });
+
+      //Iterate through data
+      for (let key in data) {
+        if (data[key] !== org[key]) {
+          // Only do this if the value was originally null, undefined, or an empty string
+          if (org[key] === null || org[key] === undefined || org[key] === "") {
+            completeAutoTodo(req.params.orgId, switchKeyForSlug(key));
+          }
+        }
+
+        // See if the thing that changed was the internal email
+        if (key === "privateContactEmail") {
+          const billingConfig =
+            await prisma.organizationBillingConfig.findFirst({
+              where: {
+                organizationId: req.params.orgId,
+              },
+            });
+          if (billingConfig.stripeCustomerId) {
+            await stripe.customers.update(billingConfig.stripeCustomerId, {
+              email: data.privateContactEmail,
+            });
+
+            await prisma.log.create({
+              data: {
+                type: "STRIPE_CUSTOMER_MODIFIED",
+                userId: req.user.id,
+                organizationId: req.params.orgId,
+                data: {
+                  from: org.privateContactEmail,
+                  to: data.privateContactEmail,
+                  stripeCustomerId: billingConfig.stripeCustomerId,
+                },
+              },
+            });
+          }
+        }
+      }
     } catch (e) {
       console.error(e);
       res.status(500).json({ message: "Internal server error" });
     }
   },
 ];
+
+const switchKeyForSlug = (key) => {
+  switch (key) {
+    case "legalName":
+      return "org.legalName.unset";
+    case "taxId":
+      return "org.taxId.unset";
+    case "type":
+      return "org.type.unset";
+    case "addressLine1":
+      return "org.address.line1.unset";
+    case "city":
+      return "org.address.city.unset";
+    case "state":
+      return "org.address.state.unset";
+    case "zip":
+      return "org.address.zip.unset";
+    case "addressPublic":
+      return "org.address.public.unset";
+    case "legalContactEmail":
+      return "org.legalContactEmail.unset";
+    case "marketingPrimaryBannerImageId":
+      return "org.marketingPrimaryBannerImageId.unset";
+    case "marketingLogoId":
+      return "org.marketingLogoId.unset";
+    case "marketingSquareLogoId":
+      return "org.marketingSquareLogoId.unset";
+    default:
+      return null;
+  }
+};

@@ -1,0 +1,12 @@
+body {
+  background-color: white;
+}
+.hightFixedMarquee .rfm-marquee-container {
+  height: 300px;
+}
+.hightFixedMarquee .rfm-initial-child-container {
+  height: 100%;
+}
+.hightFixedMarquee .rfm-child {
+  height: 100%;
+}

@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `UserEvent` MODIFY `role` ENUM('OWNER', 'ADMIN', 'USER', 'INVITEE', 'SUSPENDED', 'VIEWER') NOT NULL;

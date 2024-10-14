@@ -8,7 +8,7 @@ import { IconLogin2, IconLogout, IconUserPlus } from "@tabler/icons-react";
 
 export const Header = () => {
   const { logout } = useAuth();
-  const { user, isLoggedIn } = useUser();
+  const { user, isLoggedIn } = useUser(false);
 
   return (
     <header className={styles.header}>

@@ -61,6 +61,7 @@ const MarketingContactsOverTimeLineChart = ({ contacts }) => {
       animations: {
         enabled: false,
       },
+      colors: ["#206bc4"],
     },
     xaxis: {
       type: "datetime",
@@ -155,6 +156,10 @@ export const MarketingContactsHeatmap = ({ contacts }) => {
     };
   });
 
+  const highestValue = Math.max(
+    ...heatmapData.map((bucket) => Math.max(...bucket.data))
+  );
+
   const options = {
     chart: {
       type: "heatmap",
@@ -176,8 +181,8 @@ export const MarketingContactsHeatmap = ({ contacts }) => {
           ranges: [
             {
               from: 0,
-              to: 500, // Set a wide range to cover all values
-              color: "#128fd9", // Single color for all values
+              to: highestValue, // Set a wide range to cover all values
+              color: "#206bc4", // Single color for all values
             },
           ],
         },

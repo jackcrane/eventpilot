@@ -12,3 +12,4 @@ This is a list of todos and the issues I currently have with the code I have wri
 - [ ] Fix "todo modified" and "todo stage modified" log duplication
 - [ ] Figure out why fetchTodo is being called like 8 billion times
 - [ ] Pull out the fetchTodo calls into a higher state to prevent re-fetching
+- [ ] Change the top of the sticky explanation section on the marketing and legal pages so the top doesnt get cut off by the header.

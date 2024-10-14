@@ -9,6 +9,8 @@
     "build": "vite build"
   },
   "dependencies": {
+    "@stripe/react-stripe-js": "^2.8.1",
+    "@stripe/stripe-js": "^4.8.0",
     "@tabler/icons-react": "^3.16.0",
     "@uploadthing/react": "^7.0.1",
     "add": "^2.0.6",
@@ -21,9 +23,10 @@
     "react-beautiful-dnd": "^13.1.1",
     "react-diff-viewer": "^3.1.1",
     "react-dom": "^18.2.0",
+    "react-fast-marquee": "^1.6.5",
     "react-hot-toast": "^2.4.1",
     "react-router-dom": "^6.26.2",
-    "tabler-react-2": "^0.1.28",
+    "tabler-react-2": "^0.1.30",
     "uploadthing": "^7.0.1",
     "yarn": "^1.22.22"
   },

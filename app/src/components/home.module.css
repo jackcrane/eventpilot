@@ -1,0 +1,215 @@
+:root {
+  --border-color: black;
+  --highlight-color: rgb(var(--tblr-primary-rgb));
+  --highlight-color-unprocessed: var(--tblr-primary-rgb);
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.headerImage {
+  height: 30px;
+}
+
+.allContainer {
+  border-left: 2px solid black;
+  border-right: 2px solid black;
+  min-height: 100vh;
+}
+
+.ic {
+  padding: 10px;
+}
+
+.headerButton {
+  background-color: var(--highlight-color);
+  color: white;
+  border: none;
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 15px;
+  transition: opacity 0.3s;
+}
+
+.headerButton:hover {
+  opacity: 0.8;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.feature {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 5px 0;
+}
+
+.featureIcon {
+  margin: 0 20px;
+  color: var(--highlight-color);
+}
+
+.hr {
+  border: 1px solid var(--border-color);
+  width: 100%;
+  opacity: 1;
+  margin: 0;
+}
+
+.hugeTitle {
+  line-height: 100%;
+}
+
+h1.hugeTitle {
+  font-size: 150px;
+}
+
+h2.hugeTitle {
+  font-size: 100px;
+}
+
+h3.hugeTitle {
+  font-size: 75px;
+}
+
+.highlight {
+  color: var(--highlight-color);
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.highlight:hover {
+  background-color: var(--highlight-color);
+  color: white;
+}
+
+.splitLeft {
+  width: 30%;
+  border-right: 2px solid var(--border-color);
+  height: 100%;
+  min-height: 200px;
+}
+
+.eventType {
+  font-size: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  margin: 10px;
+}
+
+.eventTypeIcon {
+  color: var(--highlight-color);
+}
+
+.splitRight {
+  flex: 1;
+  padding: 20px;
+  height: 100%;
+}
+
+.mini {
+  font-size: 18px;
+}
+
+.featureCard {
+  border-left: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
+  padding: 10px;
+  width: 300px;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+}
+
+h4.hugeTitle {
+  font-size: 30px;
+  line-height: 100%;
+}
+
+.featureCardIcon {
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  color: var(--highlight-color);
+  background-color: rgba(var(--highlight-color-unprocessed), 0.2);
+  padding: 50px;
+  border-radius: 100%;
+}
+
+.pricingTable {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(4, 1fr);
+  grid-template-rows: 200px repeat(7, 1fr);
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+.pricingTablePlan {
+  border: 2px solid var(--border-color);
+  padding: 8px;
+  margin: 8px;
+}
+
+.price {
+  font-size: 40px;
+  display: inline;
+  color: var(--highlight-color);
+}
+
+@media screen and (max-width: 1000px) {
+  .pricingTablePlan h4 {
+    font-size: 20px;
+  }
+  .price {
+    font-size: 20px;
+  }
+}
+
+.pricingTableFeature {
+  border-top: 1px solid var(--border-color);
+  padding: 0px 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.pricingTableFeature h3 {
+  margin: 8px 0px;
+}
+
+.pricingTableInclusion {
+  border-top: 1px solid var(--border-color);
+  border-left: 1px solid #c0c0c0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0px 8px;
+}
+
+.red {
+  color: #d63939;
+}
+
+.green {
+  color: #2fb344;
+}
+
+.gray {
+  color: #6c7a91;
+}

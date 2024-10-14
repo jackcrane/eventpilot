@@ -1335,6 +1335,18 @@
   resolved "https://registry.yarnpkg.com/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.21.2.tgz#e4291e3c1bc637083f87936c333cdbcad22af63b"
   integrity sha512-6UUxd0+SKomjdzuAcp+HAmxw1FlGBnl1v2yEPSabtx4lBfdXHDVsW7+lQkgz9cNFJGY3AWR7+V8P5BqkD9L9nA==
 
+"@stripe/react-stripe-js@^2.8.1":
+  version "2.8.1"
+  resolved "https://registry.yarnpkg.com/@stripe/react-stripe-js/-/react-stripe-js-2.8.1.tgz#63d9a666749f818b1bf4eb788eb1bc57eb496f3d"
+  integrity sha512-C410jVKOATinXLalWotab6E6jlWAlbqUDWL9q1km0p5UHrvnihjjYzA8imYXc4xc4Euf9GeKDQc4n35HKZvgwg==
+  dependencies:
+    prop-types "^15.7.2"
+
+"@stripe/stripe-js@^4.8.0":
+  version "4.8.0"
+  resolved "https://registry.yarnpkg.com/@stripe/stripe-js/-/stripe-js-4.8.0.tgz#ba78f775347cb30e93e13aa408b345de15e3ff80"
+  integrity sha512-+4Cb0bVHlV4BJXxkJ3cCLSLuWxm3pXKtgcRacox146EuugjCzRRII5T5gUMgL4HpzrBLVwVxjKaZqntNWAXawQ==
+
 "@tabler/icons-react@^3.14.0", "@tabler/icons-react@^3.16.0":
   version "3.16.0"
   resolved "https://registry.yarnpkg.com/@tabler/icons-react/-/icons-react-3.16.0.tgz#4a728c0e202800ff10c5f9ce7acd3edd6973c917"
@@ -2204,6 +2216,11 @@ react-dom@^18.2.0, react-dom@^18.3.1:
     loose-envify "^1.1.0"
     scheduler "^0.23.2"
 
+react-fast-marquee@^1.6.5:
+  version "1.6.5"
+  resolved "https://registry.yarnpkg.com/react-fast-marquee/-/react-fast-marquee-1.6.5.tgz#98929ae93eef087a607a71e9d45ab76bba97dc16"
+  integrity sha512-swDnPqrT2XISAih0o74zQVE2wQJFMvkx+9VZXYYNSLb/CUcAzU9pNj637Ar2+hyRw6b4tP6xh4GQZip2ZCpQpg==
+
 react-hot-toast@^2.4.1:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/react-hot-toast/-/react-hot-toast-2.4.1.tgz#df04295eda8a7b12c4f968e54a61c8d36f4c0994"
@@ -2455,10 +2472,10 @@ svg.select.js@^3.0.1:
   dependencies:
     svg.js "^2.6.5"
 
-tabler-react-2@^0.1.28:
-  version "0.1.28"
-  resolved "https://registry.yarnpkg.com/tabler-react-2/-/tabler-react-2-0.1.28.tgz#01fb36229617e1e2f6f3f8bc1c3990279dcb020a"
-  integrity sha512-SXkS4iCfGsFhDJO2cLMGPkE0HJG2ckVNS649Gdy61RYyezOStyDFEjNgOp1CJaOPNOvMc9i4XyXqsAk8tGPSrA==
+tabler-react-2@^0.1.30:
+  version "0.1.30"
+  resolved "https://registry.yarnpkg.com/tabler-react-2/-/tabler-react-2-0.1.30.tgz#ec4212f0a08b1138087bd8ffea6cb31489805080"
+  integrity sha512-DrZxnfYA6RIq7oH8T3byW2dBbtaKG1yNMHHhaGbHaPKoci8A6S8gPUi3TSdPYsjT+eV+tZ/oEc4G8Gff4OijtQ==
   dependencies:
     "@babel/cli" "^7.24.8"
     "@babel/core" "^7.24.8"

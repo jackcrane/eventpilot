@@ -13,7 +13,9 @@
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "5.19.1",
+    "@uploadthing/react": "7.0.3-canary.463ce07",
     "bcrypt": "^5.1.1",
+    "chalk": "^5.3.0",
     "cors": "^2.8.5",
     "crypto-js": "^4.2.0",
     "dotenv": "^16.4.5",
@@ -22,7 +24,8 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "resend": "^4.0.0",
-    "uploadthing": "https://pkg.pr.new/pingdotgg/uploadthing@954"
+    "stripe": "^17.2.0",
+    "uploadthing": "7.0.3-canary.463ce07"
   },
   "devDependencies": {
     "prisma": "5.19.1"

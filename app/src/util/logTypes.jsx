@@ -2,8 +2,11 @@ import React from "react";
 import {
   IconCopy,
   IconCopyMinus,
+  IconCopyOff,
   IconCopyPlus,
   IconCopyX,
+  IconCrop11,
+  IconCrop11Filled,
   IconEdit,
   IconLockAccessOff,
   IconLogs,
@@ -53,6 +56,18 @@ export const switchLogTypes = (logType) => {
         text: "Todo Modified Blocked",
         icon: IconLockAccessOff,
         color: "red",
+      };
+    case "TODO_AUTO_UPDATE_FAILED":
+      return {
+        text: "Todo Auto Update Failed",
+        icon: IconCopyOff,
+        color: "red",
+      };
+    case "TODO_AUTO_UPDATE":
+      return {
+        text: "Todo Auto Update",
+        icon: IconCrop11,
+        color: "green",
       };
     default:
       return { text: "Log", icon: IconLogs, color: "gray" };
@@ -130,6 +145,33 @@ export const switchLogTypesForContent = (log, renderLogCard = true) => {
             so.
           </Text>
           <ObjectDiffViewer oldObj={log.data.from} newObj={log.data.to} />
+          {renderLogCard && (
+            <Util.Hr text="Below reflects the current state of the todo" />
+          )}
+          {renderLogCard && <Todo todoItem={log.todoItem} />}
+        </>
+      );
+    case "TODO_AUTO_UPDATE_FAILED":
+      return (
+        <>
+          <Text>
+            EventPilot attempted to automatically update a todo but was unable
+            to. More details are posted in the todo's comments.
+          </Text>
+          {renderLogCard && (
+            <Util.Hr text="Below reflects the current state of the todo" />
+          )}
+          {renderLogCard && <Todo todoItem={log.todoItem} />}
+        </>
+      );
+    case "TODO_AUTO_UPDATE":
+      return (
+        <>
+          <Text>
+            EventPilot successfully automatically updated a todo because the
+            requisite changes were made in your org. More details are posted in
+            the todo's comments.
+          </Text>
           {renderLogCard && (
             <Util.Hr text="Below reflects the current state of the todo" />
           )}
