@@ -1,5 +1,9 @@
-export const u = (path) =>
-  process.env.NODE_ENV === "production" ? "" : "http://localhost:2000" + path;
+export const u = (path) => {
+  const res =
+    process.env.NODE_ENV === "production" ? "" : "http://localhost:2000" + path;
+  console.log("Routing to", path, res);
+  return res;
+};
 
 export const authFetch = async (url, options) => {
   const token = localStorage.getItem("token");
