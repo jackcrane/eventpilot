@@ -1,6 +1,9 @@
 # Base image for frontend and backend
 FROM node:18-alpine AS base
 
+# Log all environment variables
+RUN echo "DATABASE_URL: $DATABASE_URL"
+
 # Set the working directory to /app for the frontend
 WORKDIR /app
 
