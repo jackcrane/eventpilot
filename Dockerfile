@@ -13,6 +13,9 @@ COPY ./app/ ./
 # Install dependencies for the frontend
 RUN yarn install
 
+# Make sure NODE_ENV is set to production
+ENV NODE_ENV=production
+
 # Build the frontend
 RUN yarn build
 
